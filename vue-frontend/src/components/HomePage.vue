@@ -4,12 +4,10 @@ import {Search, Star} from "@element-plus/icons-vue";
 import axios from "axios";
 
 const input = ref('')
-const dialogFormVisible = ref(false)
-const username = ref('')
 const isStar = ref(false)
 const count = ref(0)
 const checked = ref(false)
-
+const username = ref(null)
 let cards = ref([])
 
 const load = () => {
@@ -39,23 +37,27 @@ function authenticate() {
 
 onMounted(() => {
       console.log('mounted');
-      let userID = window.location.href.split('userID=')[1];
-      axios.get('http://127.0.0.1:8080/get/username?userID=' + userID)
-          .then((response) => {
-            console.log(response.data);
-            username.value = response.data.username;
-          }).catch((error) => {
-        if (error.response.status === 401) {
-          console.log('用户不存在');
-          alert('用户不存在，请重新登录');
-          authenticate();
-        } else if (error.response.status === 500) {
-          console.log('获取用户名失败');
-          alert('获取用户名失败, 请重新登录');
-          authenticate();
-        }
-      });
-      console.log(username.value);
+      // userID = window.location.href.split('userID=')[1];
+      let userID = window.sessionStorage.getItem('userID');
+      console.log(userID)
+      if (userID!=null){
+        axios.get('http://127.0.0.1:8080/get/username?userID=' + userID)
+            .then((response) => {
+              console.log(response.data);
+              window.sessionStorage.setItem('username', response.data.username);
+              username.value = window.sessionStorage.getItem('username');
+            }).catch((error) => {
+          if (error.response.status === 401) {
+            alert('用户不存在，请重新登录');
+            authenticate();
+          } else if (error.response.status === 500) {
+            alert('获取用户名失败, 请重新登录');
+            authenticate();
+          }
+        });
+      }
+
+      // console.log(username.value);
     }
 )
 
@@ -90,11 +92,14 @@ function createNewQuestion() {
     authenticate();
   }
   console.log('创建一个新的卡片来记录问题');
-  let userID = window.location.href.split('userID=')[1];
+  // let userID = window.location.href.split('userID=')[1];
+  let userID = window.sessionStorage.getItem('userID');
+  console.log(userID)
   axios.get('http://127.0.0.1:8080/new/card?userID=' + userID)
       .then((response) => {
         console.log(response.data);
-        window.location.href = '/new/question?userID=' + window.location.href.split('userID=')[1] + '&cardID=' + response.data.cardID;
+        window.sessionStorage.setItem('cardID', response.data.cardID);
+        window.location.href = '/new/question';
       })
       .catch((error) => {
         alert('服务器出现错误，无法创建新问题，请重新尝试');
@@ -127,7 +132,7 @@ function getCardsSortedByHottest() {
 function card_details(cardID) {
   console.log('查看卡片详');
   console.log(cardID);
-  window.location.href = '/card/details?userID=' + window.location.href.split('userID=')[1] + '&cardID=' + cardID;
+  window.location.href = '/card/details?cardID=' + cardID;
 }
 
 onMounted(() => {
@@ -156,6 +161,7 @@ onMounted(() => {
             placeholder="Search..."
             :prefix-icon="Search"
             clearable
+            disabled
         />
         <el-button class="login-text" v-if="!username" @click="authenticate" text>Login</el-button>
         <el-button class="login-text" v-else @click="user" text>{{ username }}</el-button>
@@ -186,7 +192,7 @@ onMounted(() => {
                     </div>
                   </template>
                   <div class="card-body">
-                    {{ card.summary }}
+                    {{ card.content }}
                   </div>
                   <template #footer>
                     <div class="card-footer">
@@ -202,12 +208,14 @@ onMounted(() => {
           </el-main>
         </el-container>
       </el-container>
+      <el-footer class="footer">
+        <div class="affix">
+          <el-affix position="bottom" :offset="10">
+            本平台仅供学习使用，请勿做其他用途；生成式回答，内容仅供参考。
+          </el-affix>
+        </div>
+      </el-footer>
     </el-container>
-  </div>
-  <div class="affix">
-    <el-affix position="bottom" :offset="10">
-      本平台仅供学习使用，请勿做其他用途；生成式回答，内容仅供参考。
-    </el-affix>
   </div>
 </template>
 
@@ -231,6 +239,10 @@ onMounted(() => {
   align-items: center;
 }
 
+.footer {
+  height: 10px;
+}
+
 .el-menu-demo {
   display: flex;
   justify-content: center;
@@ -252,13 +264,16 @@ onMounted(() => {
 }
 
 .card-body {
-  display: flex;
+  display: -webkit-box;
   justify-content: space-between;
   align-items: center;
   height: 70px;
   width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
+  //white-space: nowrap;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
 }
 
 .logo {

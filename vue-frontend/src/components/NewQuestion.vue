@@ -8,9 +8,10 @@ const iframeSrc = ref('');
 
 onMounted(() => {
   // 获取当前页面的URL
-  const IDs = window.location.href.split('?')[1]
+  const userID = window.sessionStorage.getItem('userID');
+  const cardID = window.sessionStorage.getItem('cardID');
 
-  iframeSrc.value = `http://localhost:8082?${IDs}`
+  iframeSrc.value = `http://localhost:8082?userID=${userID}&cardID=${cardID}`
 });
 </script>
 

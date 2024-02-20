@@ -1,39 +1,37 @@
-<script>
+<script setup>
 import axios from "axios";
+import {onMounted} from "vue";
 
-export default {
-  name: "GithubCallback",
-  mounted() {
-    let code = window.location.href.split('code=')[1];
-    if (code) {
-      axios.get('http://127.0.0.1:8080/callback/github?code=' + code)
-          .then((response) => {
-            console.log(response.data);
-            let username = response.data.username;
-            let email = response.data.email;
-            axios.get('http://127.0.0.1:8080/check/user?username=' + username + '&email=' + email)
-                .then((response) => {
-                  console.log(response.data);
-                  if (response.data.error === null) {
-                    window.location.href = 'http://127.0.0.1:8081/?userID=' + response.data.userID;
-                  } else {
-                    console.log(response.data.error);
-                  }
+onMounted(() => {
+      let code = window.location.href.split('code=')[1];
+      if (code) {
+        axios.get('http://127.0.0.1:8080/callback/github?code=' + code)
+            .then((response) => {
+              console.log(response.data);
+              let username = response.data.username;
+              let email = response.data.email;
+              axios.get('http://127.0.0.1:8080/check/user?username=' + username + '&email=' + email)
+                  .then((response) => {
+                    console.log(response.data);
+                    if (response.data.error === null) {
+                      window.location.href = 'http://127.0.0.1:8081/?userID=' + response.data.userID;
+                    } else {
+                      console.log(response.data.error);
+                    }
 
-                })
-                .catch((error) => {
-                  console.log('获取用户信息失败：', error);
-                });
-          })
-          .catch((error) => {
-            console.log('获取认证URL失败：', error);
-          });
-    } else {
-      console.log('没有code');
+                  })
+                  .catch((error) => {
+                    console.log('获取用户信息失败：', error);
+                  });
+            })
+            .catch((error) => {
+              console.log('获取认证URL失败：', error);
+            });
+      } else {
+        console.log('没有code');
+      }
     }
-
-  }
-}
+)
 </script>
 
 <template>

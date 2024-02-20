@@ -33,7 +33,12 @@ func main() {
 	// register the routes
 	// TODO: auth这部分，现在如果用户碰巧手动输入了一个正确的userid的话，会进到别的用户的界面中
 	router.GET("/auth", api.GitHubOAuth)
-	router.GET("/callback/github", api.GitHubCallback)
+
+	callbackGroup := router.Group("/callback")
+	{
+		callbackGroup.GET("/github", api.GitHubCallback)
+		//callbackGroup.GET("/gitlab", api.GitLabCallback)
+	}
 
 	checkGroup := router.Group("/check")
 	{

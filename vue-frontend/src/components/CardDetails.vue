@@ -1,6 +1,6 @@
 <script setup>
 import {onMounted, ref} from 'vue'
-import {Back, Search, Star} from "@element-plus/icons-vue";
+import {Back, Star} from "@element-plus/icons-vue";
 import axios from "axios";
 
 const input = ref('')
@@ -10,6 +10,7 @@ let card_data = ref({})
 let qa_id = ref([])
 let qa_data = ref([])
 let count = ref(0)
+
 
 function user() {
   console.log('用户信息');
@@ -108,7 +109,8 @@ function back() {
               <template #header>
                 <div class="card-header">
                   <span>#{{ card_data.id }}</span>
-                  <el-button :icon="Star" @click="toggleStar" circle disabled></el-button>
+                  <el-button v-if="isStar.value===false" :icon="Star" circle disabled @click="toggleStar"></el-button>
+                  <el-button v-else :icon="Star" type="warning" circle disabled @click="toggleStar"></el-button>
                 </div>
               </template>
               <el-card v-for="qa in qa_data" shadow="hover">
@@ -119,12 +121,14 @@ function back() {
           </el-main>
         </el-container>
       </el-container>
+      <el-footer class="footer">
+        <div class="affix">
+          <el-affix position="bottom" :offset="10">
+            本平台仅供学习使用，请勿做其他用途；生成式回答，内容仅供参考。
+          </el-affix>
+        </div>
+      </el-footer>
     </el-container>
-  </div>
-  <div class="affix">
-    <el-affix position="bottom" :offset="10">
-      本平台仅供学习使用，请勿做其他用途；生成式回答，内容仅供参考。
-    </el-affix>
   </div>
 </template>
 
@@ -134,6 +138,10 @@ function back() {
   height: 90vh;
   width: 75vw;
   justify-content: space-between;
+}
+
+.footer {
+  height: 10px;
 }
 
 .common-layout {

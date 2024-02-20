@@ -61,8 +61,12 @@ onMounted(() => {
     }
 )
 
-function user() {
-  console.log('用户信息');
+function logout() {
+  console.log('退出登录');
+  window.sessionStorage.removeItem('userID');
+  window.sessionStorage.removeItem('username');
+  window.sessionStorage.removeItem('cardID');
+  window.location.href = '/';
 }
 
 function toggleStar() {
@@ -164,7 +168,19 @@ onMounted(() => {
             disabled
         />
         <el-button class="login-text" v-if="!username" @click="authenticate" text>Login</el-button>
-        <el-button class="login-text" v-else @click="user" text>{{ username }}</el-button>
+        <el-dropdown>
+          <span class="el-dropdown-link">
+            {{ username }}
+          </span>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item @click="myquestion" disabled>我的问题</el-dropdown-item>
+              <el-dropdown-item @click="myfavorite" disabled>我的收藏</el-dropdown-item>
+              <el-dropdown-item @click="logout" divided>退出登录</el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
+<!--        <el-button class="login-text" v-else @click="user" text>{{ username }}</el-button>-->
       </el-header>
       <el-container>
         <el-header>
@@ -221,6 +237,15 @@ onMounted(() => {
 
 
 <style scoped>
+.el-dropdown-link {
+  cursor: pointer;
+  color: #329eff;
+  text-decoration: underline;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+}
+
 .container {
   height: 90vh;
   width: 75vw;

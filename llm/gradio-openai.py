@@ -1,7 +1,7 @@
 import openai
 import gradio as gr
 
-import my_chat_interface as chat_interface
+from registory import my_chat_interface as chat_interface
 import registory.utils
 
 openai.api_key = "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"

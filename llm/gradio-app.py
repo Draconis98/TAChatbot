@@ -3,8 +3,9 @@ import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer, StoppingCriteria, StoppingCriteriaList, TextIteratorStreamer
 from transformers.generation.utils import GenerationConfig
 from threading import Thread
-from peft import PeftModel, PeftConfig
-import my_chat_interface as chat_interface
+from peft import PeftModel
+from registory import my_chat_interface as chat_interface
+
 model_path = "/LLM/baichuan/Baichuan2-7B-Chat"
 lora_path = "/LLM/baichuan/FT/A100-7B-Chat-2048-64-16-16-2-1e-5-constant_self_instruct_eval-a/checkpoint-797/"
 

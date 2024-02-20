@@ -31,7 +31,7 @@ def predict(message, history, request: gr.Request):
             partial_message += chunk['choices'][0]['delta']['content']
             yield partial_message
 
-    registory.utils.registory_operation(request, message, partial_message)
+    registory.utils.record_question(request, message, partial_message)
 
 
 if __name__ == "__main__":

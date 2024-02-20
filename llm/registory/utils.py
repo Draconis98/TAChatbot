@@ -20,7 +20,8 @@ class mongodb:
         if self.db[collection].find_one(query) is None:
             return self.db[collection].update_one(query, {"$set": query}, upsert=True)
 
-def registory_operation(request, message, partial_message):
+
+def record_question(request, message, partial_message):
     db = mongodb("localhost", "llm")
     question_id = db.insert("questions",
                     {"question": message,
@@ -36,4 +37,4 @@ def registory_operation(request, message, partial_message):
 
     # print(question_id, card_id)
     db.update("users", {"_id": _user_id}, {"$push": {"questions": question_id}})
-    db.update("cards", {"_id": _card_id}, {"$push": {"questions": question_id}})
+    db.update("cards", {"_id": _card_id}, {"$push": {"questions": question_id, "content": {"question": message, "answer": partial_message}}})

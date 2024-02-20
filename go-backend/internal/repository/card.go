@@ -6,7 +6,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
-	"log"
 )
 
 type CardRepo interface {
@@ -67,7 +66,7 @@ func (r *CardRepository) SortCard(ctx context.Context, method string) ([]model.C
 		if err != nil {
 			return nil, err
 		}
-		log.Println(card)
+		//log.Println(card)
 		if method == "latest" { // 如果是要求按最新的顺序排列，则从切片前向插入
 			cards = append([]model.Card{card}, cards...)
 		} else if method == "hottest" {
@@ -77,6 +76,6 @@ func (r *CardRepository) SortCard(ctx context.Context, method string) ([]model.C
 		}
 
 	}
-	log.Println(cards)
+	//log.Println(cards)
 	return cards, nil
 }

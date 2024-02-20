@@ -1,11 +1,18 @@
 import gradio as gr
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer, StoppingCriteria, StoppingCriteriaList, TextIteratorStreamer
+from transformers.generation.utils import GenerationConfig
 from threading import Thread
+from peft import PeftModel, PeftConfig
+import my_chat_interface as chat_interface
+model_path = "/LLM/baichuan/Baichuan2-7B-Chat"
+lora_path = "/LLM/baichuan/FT/A100-7B-Chat-2048-64-16-16-2-1e-5-constant_self_instruct_eval-a/checkpoint-797/"
 
-tokenizer = AutoTokenizer.from_pretrained("togethercomputer/RedPajama-INCITE-Chat-3B-v1")
-model = AutoModelForCausalLM.from_pretrained("togethercomputer/RedPajama-INCITE-Chat-3B-v1", torch_dtype=torch.float16)
-model = model.to('cuda:0')
+tokenizer = AutoTokenizer.from_pretrained(model_path, use_fast=True, trust_remote_code=True)
+model = AutoModelForCausalLM.from_pretrained(model_path, torch_dtype=torch.float16, device_map="auto", trust_remote_code=True)
+model = PeftModel.from_pretrained(lora_path, model=model, trust_remote_code=True)
+model.generation_config = GenerationConfig.from_pretrained(model_path)
+model = model.to('cuda')
 
 class StopOnTokens(StoppingCriteria):
     def __call__(self, input_ids: torch.LongTensor, scores: torch.FloatTensor, **kwargs) -> bool:
@@ -28,7 +35,7 @@ def predict(message, history):
     generate_kwargs = dict(
         model_inputs,
         streamer=streamer,
-        max_new_tokens=1024,
+        max_new_tokens=2048,
         do_sample=True,
         top_p=0.95,
         top_k=1000,
@@ -39,11 +46,19 @@ def predict(message, history):
     t = Thread(target=model.generate, kwargs=generate_kwargs)
     t.start()
 
-    partial_message  = ""
+    partial_message = ""
     for new_token in streamer:
         if new_token != '<':
             partial_message += new_token
             yield partial_message
 
+    t.join()
 
-gr.ChatInterface(predict).launch()
+
+
+if __name__ == "__main__":
+    chat_interface.ChatInterface(
+        fn=predict,
+        chatbot=gr.Chatbot(scale=1, height=600),
+        css="margin.css",
+    ).launch(server_port=8082)

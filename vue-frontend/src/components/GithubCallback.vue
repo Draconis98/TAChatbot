@@ -14,7 +14,9 @@ onMounted(() => {
                   .then((response) => {
                     console.log(response.data);
                     if (response.data.error === null) {
-                      window.location.href = 'http://127.0.0.1:8081/?userID=' + response.data.userID;
+                      window.sessionStorage.setItem('userID', response.data.userID);
+                      // window.location.href = 'http://127.0.0.1:8081/?userID=' + response.data.userID;
+                      window.location.href = 'http://127.0.0.1:8081';
                     } else {
                       console.log(response.data.error);
                     }

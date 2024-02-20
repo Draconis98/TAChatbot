@@ -34,23 +34,27 @@ function authenticate() {
 
 onMounted(() => {
       console.log('mounted');
-      let userID = window.location.href.split('userID=')[1];
-      axios.get('http://127.0.0.1:8080/get/username?userID=' + userID)
-          .then((response) => {
-            console.log(response.data);
-            username.value = response.data.username;
-          }).catch((error) => {
-        if (error.response.status === 401) {
-          console.log('用户不存在');
-          alert('用户不存在，请重新登录');
-          authenticate();
-        } else if (error.response.status === 500) {
-          console.log('获取用户名失败');
-          alert('获取用户名失败, 请重新登录');
-          authenticate();
-        }
-      });
-      console.log(username.value);
+      // userID = window.location.href.split('userID=')[1];
+      let userID = window.sessionStorage.getItem('userID');
+      console.log(userID)
+      if (userID != null) {
+        axios.get('http://127.0.0.1:8080/get/username?userID=' + userID)
+            .then((response) => {
+              console.log(response.data);
+              window.sessionStorage.setItem('username', response.data.username);
+              username.value = window.sessionStorage.getItem('username');
+            }).catch((error) => {
+          if (error.response.status === 401) {
+            alert('用户不存在，请重新登录');
+            authenticate();
+          } else if (error.response.status === 500) {
+            alert('获取用户名失败, 请重新登录');
+            authenticate();
+          }
+        });
+      }
+
+      // console.log(username.value);
     }
 )
 

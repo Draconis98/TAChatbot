@@ -105,8 +105,8 @@ function createNewQuestion() {
 function getCardsSortedByLatest() {
   axios.get('http://127.0.0.1:8080/show/latest')
       .then((response) => {
-        cards = response.data.card_list;
-        console.log(cards);
+        cards.value = response.data.card_list;
+        console.log(cards.value);
       })
       .catch((error) => {
         alert('获取卡片失败\n' + error);
@@ -116,8 +116,8 @@ function getCardsSortedByLatest() {
 function getCardsSortedByHottest() {
   axios.get('http://127.0.0.1:8080/show/hottest')
       .then((response) => {
-        cards = response.data.card_list;
-        console.log(cards);
+        cards.value = response.data.card_list;
+        console.log(cards.value);
       })
       .catch((error) => {
         alert('获取卡片失败\n' + error);
@@ -133,8 +133,8 @@ function card_details(cardID) {
 onMounted(() => {
   axios.get('http://127.0.0.1:8080/show/')
       .then((response) => {
-        cards = response.data.card_list;
-        console.log(cards);
+        cards.value = response.data.card_list;
+        console.log(cards.value);
       })
       .catch((error) => {
         alert('获取卡片失败\n' + error);
@@ -186,15 +186,7 @@ onMounted(() => {
                     </div>
                   </template>
                   <div class="card-body">
-                    <!-- 生成一大段随机文本 -->
-                    DevTools now shows you original variable names instead of minified across the Console, conditional
-                    breakpoints and logpoints, watch expressions, live expressions, and more.
-                    DevTools now shows you original variable names instead of minified across the Console, conditional
-                    breakpoints and logpoints, watch expressions, live expressions, and more.
-                    DevTools now shows you original variable names instead of minified across the Console, conditional
-                    breakpoints and logpoints, watch expressions, live expressions, and more.DevTools now shows you
-                    original variable names instead of minified across the Console, conditional breakpoints and
-                    logpoints, watch expressions, live expressions, and more.
+                    {{ card.summary }}
                   </div>
                   <template #footer>
                     <div class="card-footer">

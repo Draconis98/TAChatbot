@@ -34,6 +34,7 @@ func NewCard(r *gin.Context) {
 		Tags:           []primitive.ObjectID{},
 		Content:        []model.QA{},
 		Summary:        "",
+		Questions:      []primitive.ObjectID{},
 		FavoritesCount: 0,
 		CreateAt:       time.Now(),
 	}

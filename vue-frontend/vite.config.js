@@ -31,14 +31,14 @@ export default defineConfig({
     server: {
         proxy: {
             '/api': {
-                target: 'http://127.0.0.1:8080',
+                target: 'https://10.30.19.40:8080',
                 changeOrigin: true,
             },
         },
         host: '10.30.19.40',
         port: 8081,
         https: true,
-        key: fs.readFile('/home/jss40/assistant/10.30.19.40-key.pem'),
-        cert: fs.readFile('/home/jss40/assistant/10.30.19.40.pem'),
+        key: fs.readFile('/home/jss40/assistant/agileserve.org.cn.key'),
+        cert: fs.readFile('/home/jss40/assistant/agileserve.org.cn.pem'),
     }
 })

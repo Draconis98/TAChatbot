@@ -50,9 +50,9 @@ def predict(message, history, request: gr.Request):
         streamer=streamer,
         max_new_tokens=2048,
         do_sample=True,
-        top_p=0.95,
-        top_k=1000,
-        temperature=1.0,
+        top_p=0.95,     # model从累计概率大于或等于p的最小集合中随机选择一个token
+        top_k=2000,     # 保留概率最高的k个token
+        temperature=0.5,
         num_beams=1,
         stopping_criteria=StoppingCriteriaList([stop])
     )
@@ -73,4 +73,4 @@ if __name__ == "__main__":
         fn=predict,
         chatbot=gr.Chatbot(scale=1, height=600),
         css="margin.css",
-    ).launch(server_port=8082)
+    ).launch(server_name="10.30.19.49", server_port=8082)

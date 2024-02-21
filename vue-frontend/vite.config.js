@@ -6,7 +6,7 @@ import vue from '@vitejs/plugin-vue'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import {ElementPlusResolver} from 'unplugin-vue-components/resolvers'
-import * as fs from "fs";
+import fs from 'fs'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -38,7 +38,7 @@ export default defineConfig({
         host: '10.30.19.40',
         port: 8081,
         https: true,
-        key: fs.readFile('/home/jss40/assistant/agileserve.org.cn.key'),
-        cert: fs.readFile('/home/jss40/assistant/agileserve.org.cn.pem'),
+        key: fs.readFileSync('/home/jss40/assistant/agileserve.org.cn.key'),
+        cert: fs.readFileSync('/home/jss40/assistant/agileserve.org.cn.pem'),
     }
 })

@@ -67,7 +67,7 @@ func main() {
 		showGroup.GET("/hottest", api.ShowHottest)
 	}
 
-	if err := router.Run(":8080"); err != nil {
+	if err := router.Run("10.30.19.40:8080"); err != nil {
 		log.Panic(err)
 	}
 }

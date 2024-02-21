@@ -70,7 +70,7 @@ func main() {
 		showGroup.GET("/hottest", api.ShowHottest)
 	}
 
-	if err := router.RunTLS("10.30.19.40:8080", "/home/jss40/assistant/10.30.19.40.pem", "/home/jss40/assistant/10.30.19.40-key.pem"); err != nil {
+	if err := router.RunTLS("10.30.19.40:8080", "/home/jss40/assistant/agileserve.org.cn.pem", "/home/jss40/assistant/agileserve.org.cn.key"); err != nil {
 		log.Panic(err)
 	}
 }

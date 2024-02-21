@@ -20,7 +20,7 @@ function onChange(status) {
 }
 
 function authenticate() {
-  axios.get('http://127.0.0.1:8080/auth')
+  axios.get('http://10.30.19.40:8080/auth')
       .then((response) => {
             console.log(response.data);
             // 解析url
@@ -41,7 +41,7 @@ onMounted(() => {
       let userID = window.sessionStorage.getItem('userID');
       console.log(userID)
       if (userID != null) {
-        axios.get('http://127.0.0.1:8080/get/username?userID=' + userID)
+        axios.get('http://10.30.19.40:8080/get/username?userID=' + userID)
             .then((response) => {
               console.log(response.data);
               window.sessionStorage.setItem('username', response.data.username);
@@ -108,7 +108,7 @@ function createNewQuestion() {
   // let userID = window.location.href.split('userID=')[1];
   let userID = window.sessionStorage.getItem('userID');
   console.log(userID)
-  axios.get('http://127.0.0.1:8080/new/card?userID=' + userID)
+  axios.get('http://10.30.19.40:8080/new/card?userID=' + userID)
       .then((response) => {
         console.log(response.data);
         window.sessionStorage.setItem('cardID', response.data.cardID);
@@ -121,7 +121,7 @@ function createNewQuestion() {
 }
 
 function getCardsSortedByLatest() {
-  axios.get('http://127.0.0.1:8080/show/latest')
+  axios.get('http://10.30.19.40:8080/show/latest')
       .then((response) => {
         cards.value = response.data.card_list;
         console.log(cards.value);
@@ -132,7 +132,7 @@ function getCardsSortedByLatest() {
 }
 
 function getCardsSortedByHottest() {
-  axios.get('http://127.0.0.1:8080/show/hottest')
+  axios.get('http://10.30.19.40:8080/show/hottest')
       .then((response) => {
         cards.value = response.data.card_list;
         console.log(cards.value);
@@ -149,7 +149,7 @@ function card_details(cardID) {
 }
 
 onMounted(() => {
-  axios.get('http://127.0.0.1:8080/show/')
+  axios.get('http://10.30.19.40:8080/show/')
       .then((response) => {
         cards.value = response.data.card_list;
         console.log(cards.value);

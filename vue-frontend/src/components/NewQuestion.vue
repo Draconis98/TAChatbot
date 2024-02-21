@@ -11,7 +11,7 @@ onMounted(() => {
   const userID = window.sessionStorage.getItem('userID');
   const cardID = window.sessionStorage.getItem('cardID');
 
-  iframeSrc.value = `http://localhost:8082?userID=${userID}&cardID=${cardID}`
+  iframeSrc.value = `http://10.30.19.40:8082?userID=${userID}&cardID=${cardID}`
 });
 </script>
 

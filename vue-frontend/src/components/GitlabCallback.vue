@@ -5,17 +5,17 @@ import {onMounted} from "vue";
 onMounted(() => {
       let code = window.location.href.split('code=')[1];
       if (code) {
-        axios.get('http://127.0.0.1:8080/callback/gitlab?code=' + code)
+        axios.get('http://10.30.19.40:8080/callback/gitlab?code=' + code)
             .then((response) => {
               console.log(response.data);
               let username = response.data.username;
               let email = response.data.email;
-              axios.get('http://127.0.0.1:8080/check/user?username=' + username + '&email=' + email)
+              axios.get('http://10.30.19.40:8080/check/user?username=' + username + '&email=' + email)
                   .then((response) => {
                     console.log(response.data);
                     if (response.data.error === null) {
                       window.sessionStorage.setItem('userID', response.data.userID);
-                      // window.location.href = 'http://127.0.0.1:8081/?userID=' + response.data.userID;
+                      // window.location.href = 'http://10.30.19.40:8081/?userID=' + response.data.userID;
                       window.location.href = '10.30.19.40:8081';
                     } else {
                       console.log(response.data.error);

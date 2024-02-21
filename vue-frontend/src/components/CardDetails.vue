@@ -17,7 +17,7 @@ function user() {
 }
 
 function authenticate() {
-  axios.get('http://127.0.0.1:8080/auth')
+  axios.get('http://10.30.19.40:8080/auth')
       .then((response) => {
             console.log(response.data);
             // 解析url
@@ -38,7 +38,7 @@ onMounted(() => {
       let userID = window.sessionStorage.getItem('userID');
       console.log(userID)
       if (userID != null) {
-        axios.get('http://127.0.0.1:8080/get/username?userID=' + userID)
+        axios.get('http://10.30.19.40:8080/get/username?userID=' + userID)
             .then((response) => {
               console.log(response.data);
               window.sessionStorage.setItem('username', response.data.username);
@@ -60,7 +60,7 @@ onMounted(() => {
 
 onMounted(() => {
   let card_id = window.location.href.split('cardID=')[1]
-  axios.get('http://127.0.0.1:8080/get/card?cardID=' + card_id)
+  axios.get('http://10.30.19.40:8080/get/card?cardID=' + card_id)
       .then((response) => {
         card_data = response.data.card;
         console.log(card_data);
@@ -69,7 +69,7 @@ onMounted(() => {
         // 遍历qa_id
         for (let i = 0; i < qa_id.length; i++) {
           console.log(qa_id[i])
-          axios.get('http://127.0.0.1:8080/get/question?questionID=' + qa_id[i])
+          axios.get('http://10.30.19.40:8080/get/question?questionID=' + qa_id[i])
               .then((response) => {
                 qa_data.value.push("Q: " + response.data.question);
                 qa_data.value.push("A: " + response.data.answer);

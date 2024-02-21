@@ -68,6 +68,7 @@ onMounted(() => {
         console.log(qa_id)
         // 遍历qa_id
         for (let i = 0; i < qa_id.length; i++) {
+          console.log(qa_id[i])
           axios.get('http://127.0.0.1:8080/get/question?questionID=' + qa_id[i])
               .then((response) => {
                 qa_data.value.push("Q: " + response.data.question);
@@ -117,8 +118,10 @@ function back() {
                   <el-button v-else :icon="Star" type="warning" circle disabled @click="toggleStar"></el-button>
                 </div>
               </template>
-              <el-card v-for="qa in qa_data" shadow="hover">
-                {{ qa }}
+              <!-- 对qa数组内容按顺序输出 -->
+
+              <el-card v-for="item in qa_data" :key="item" shadow="hover">
+                {{ item }}
               </el-card>
 
             </el-card>

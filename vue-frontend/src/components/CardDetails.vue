@@ -196,6 +196,12 @@ function back() {
   height: 40px;
 }
 
+.login-text {
+  cursor: pointer;
+  color: #329eff;
+  text-decoration: underline;
+  padding: 0 10px;
+}
 
 .container {
   height: 90vh;

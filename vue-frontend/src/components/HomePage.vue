@@ -273,6 +273,12 @@ onMounted(() => {
   height: 40px;
 }
 
+.login-text {
+  cursor: pointer;
+  color: #329eff;
+  text-decoration: underline;
+  padding: 0 10px;
+}
 
 .el-dropdown-link {
   cursor: pointer;
@@ -338,12 +344,7 @@ onMounted(() => {
   margin-right: 10px;
 }
 
-.login-text {
-  cursor: pointer;
-  color: #329eff;
-  text-decoration: underline;
-  padding: 0 10px;
-}
+
 
 
 

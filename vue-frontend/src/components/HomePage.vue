@@ -21,7 +21,7 @@ function onChange(status) {
 }
 
 function authenticate() {
-  axios.get(backendURL + '/auth')
+  axios.get(backendURL.value + '/auth')
       .then((response) => {
             console.log(response.data);
             // 解析url
@@ -42,7 +42,7 @@ onMounted(() => {
       let userID = window.sessionStorage.getItem('userID');
       console.log(userID)
       if (userID != null) {
-        axios.get(backendURL + '/get/username?userID=' + userID)
+        axios.get(backendURL.value + '/get/username?userID=' + userID)
             .then((response) => {
               console.log(response.data);
               window.sessionStorage.setItem('username', response.data.username);
@@ -109,7 +109,7 @@ function createNewQuestion() {
   // let userID = window.location.href.split('userID=')[1];
   let userID = window.sessionStorage.getItem('userID');
   console.log(userID)
-  axios.get(backendURL + '/new/card?userID=' + userID)
+  axios.get(backendURL.value + '/new/card?userID=' + userID)
       .then((response) => {
         console.log(response.data);
         window.sessionStorage.setItem('cardID', response.data.cardID);
@@ -122,7 +122,7 @@ function createNewQuestion() {
 }
 
 function getCardsSortedByLatest() {
-  axios.get(backendURL + '/show/latest')
+  axios.get(backendURL.value + '/show/latest')
       .then((response) => {
         cards.value = response.data.card_list;
         console.log(cards.value);
@@ -133,7 +133,7 @@ function getCardsSortedByLatest() {
 }
 
 function getCardsSortedByHottest() {
-  axios.get(backendURL + '/show/hottest')
+  axios.get(backendURL.value + '/show/hottest')
       .then((response) => {
         cards.value = response.data.card_list;
         console.log(cards.value);

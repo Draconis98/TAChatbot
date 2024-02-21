@@ -18,7 +18,7 @@ function user() {
 }
 
 function authenticate() {
-  axios.get(backendURL + '/auth')
+  axios.get(backendURL.value + '/auth')
       .then((response) => {
             console.log(response.data);
             // 解析url
@@ -39,7 +39,7 @@ onMounted(() => {
       let userID = window.sessionStorage.getItem('userID');
       console.log(userID)
       if (userID != null) {
-        axios.get(backendURL + '/get/username?userID=' + userID)
+        axios.get(backendURL.value + '/get/username?userID=' + userID)
             .then((response) => {
               console.log(response.data);
               window.sessionStorage.setItem('username', response.data.username);
@@ -61,7 +61,7 @@ onMounted(() => {
 
 onMounted(() => {
   let card_id = window.location.href.split('cardID=')[1]
-  axios.get(backendURL + '/get/card?cardID=' + card_id)
+  axios.get(backendURL.value + '/get/card?cardID=' + card_id)
       .then((response) => {
         card_data = response.data.card;
         console.log(card_data);
@@ -70,7 +70,7 @@ onMounted(() => {
         // 遍历qa_id
         for (let i = 0; i < qa_id.length; i++) {
           console.log(qa_id[i])
-          axios.get(backendURL + '/get/question?questionID=' + qa_id[i])
+          axios.get(backendURL.value + '/get/question?questionID=' + qa_id[i])
               .then((response) => {
                 qa_data.value.push("Q: " + response.data.question);
                 qa_data.value.push("A: " + response.data.answer);

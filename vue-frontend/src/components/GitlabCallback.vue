@@ -7,12 +7,12 @@ const backendURL = ref('https://callme.agileserve.org.cn:30941')
 onMounted(() => {
       let code = window.location.href.split('code=')[1];
       if (code) {
-        axios.get(backendURL + '/callback/gitlab?code=' + code)
+        axios.get(backendURL.value + '/callback/gitlab?code=' + code)
             .then((response) => {
               console.log(response.data);
               let username = response.data.username;
               let email = response.data.email;
-              axios.get(backendURL + '/check/user?username=' + username + '&email=' + email)
+              axios.get(backendURL.value + '/check/user?username=' + username + '&email=' + email)
                   .then((response) => {
                     console.log(response.data);
                     if (response.data.error === null) {

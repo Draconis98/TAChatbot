@@ -162,15 +162,15 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="common-layout">
+  <div class="layout">
     <el-container class="container">
-      <el-header class="header">
+      <el-header class="navbar">
         <el-icon size="25" class="logo">
           <House/>
         </el-icon>
         <el-input
             v-model="input"
-            class="w-50 m-2"
+            class="searchbar"
             size="large"
             placeholder="Search..."
             :prefix-icon="Search"
@@ -190,20 +190,16 @@ onMounted(() => {
             </el-dropdown-menu>
           </template>
         </el-dropdown>
-        <!--        <el-button class="login-text" v-else @click="user" text>{{ username }}</el-button>-->
       </el-header>
       <el-container>
         <el-header>
-          <el-menu class="el-menu-demo" mode="horizontal" center>
+          <el-menu class="menu" mode="horizontal" center>
             <el-menu-item index="1" @click="latest">按最新排序</el-menu-item>
             <el-menu-item index="2" @click="hottest" disabled>按最热排序</el-menu-item>
-            <el-menu-item index="3" @click="createNewQuestion">创建新问题</el-menu-item>
+            <el-menu-item index="3" @click="createNewQuestion" style="margin-right: auto">创建新问题</el-menu-item>
           </el-menu>
         </el-header>
         <el-container>
-          <!--          <el-aside width=20%>-->
-
-          <!--          </el-aside>-->
           <el-main>
             <ul v-infinite-scroll="load" class="infinite-list" style="overflow: auto">
               <li v-for="card in cards" :key="card.id" class="infinite-list-item">
@@ -249,6 +245,35 @@ onMounted(() => {
 
 
 <style scoped>
+.layout {
+  display: -webkit-flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0;
+  margin: 0;
+  height: 100vh;
+  width: 100vw;
+}
+
+.container {
+  height: 95vh;
+  width: 100vw;
+  justify-content: space-between;
+  padding: 0 0;
+  margin: 0;
+}
+
+.navbar {
+  display: -webkit-inline-flex;
+  height: 5vh;
+  align-items: center;
+}
+
+.searchbar {
+  height: 40px;
+}
+
+
 .el-dropdown-link {
   cursor: pointer;
   color: #329eff;
@@ -258,17 +283,9 @@ onMounted(() => {
   padding: 0 10px;
 }
 
-.container {
-  height: 90vh;
-  width: 75vw;
-  justify-content: space-between;
-}
 
-.common-layout {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+
+
 
 .header {
   display: flex;
@@ -280,9 +297,9 @@ onMounted(() => {
   height: 10px;
 }
 
-.el-menu-demo {
-  display: flex;
-  justify-content: center;
+.menu {
+  display: -webkit-flex;
+  justify-content: start;
   align-items: center;
 }
 
@@ -290,7 +307,7 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 5px;
+  height: 3px;
 }
 
 .card-footer {
@@ -323,16 +340,12 @@ onMounted(() => {
 
 .login-text {
   cursor: pointer;
-  color: blue;
+  color: #329eff;
   text-decoration: underline;
-  padding: 5px 10px;
-  margin-left: auto;
-}
-
-.w-50 .m-2 {
-  width: 80%;
   padding: 0 10px;
 }
+
+
 
 .box-card {
   width: 100%;

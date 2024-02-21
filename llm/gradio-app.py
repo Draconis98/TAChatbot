@@ -1,21 +1,31 @@
 import gradio as gr
 import torch
-from transformers import AutoModelForCausalLM, AutoTokenizer, StoppingCriteria, StoppingCriteriaList, TextIteratorStreamer
+from transformers import AutoModelForCausalLM, AutoTokenizer, StoppingCriteria, StoppingCriteriaList, \
+    TextIteratorStreamer
 from transformers.generation.utils import GenerationConfig
 from threading import Thread
 from peft import PeftModel
 from registory import my_chat_interface as chat_interface
 import registory.utils
 
-
 model_path = "/LLM/baichuan/Baichuan2-7B-Chat"
 lora_path = "/LLM/baichuan/FT/A100-7B-Chat-2048-64-16-16-2-1e-5-constant_self_instruct_eval-a/checkpoint-797/"
 
-tokenizer = AutoTokenizer.from_pretrained(model_path, use_fast=True, trust_remote_code=True)
-model = AutoModelForCausalLM.from_pretrained(model_path, torch_dtype=torch.float16, device_map="auto", trust_remote_code=True)
-model = PeftModel.from_pretrained(lora_path, model=model, trust_remote_code=True)
+print("init model...")
+model = AutoModelForCausalLM.from_pretrained(
+    model_path,
+    torch_dtype=torch.float16,
+    device_map="auto",
+    trust_remote_code=True
+)
+model = PeftModel.from_pretrained(model, lora_path)
 model.generation_config = GenerationConfig.from_pretrained(model_path)
-model = model.to('cuda')
+tokenizer = AutoTokenizer.from_pretrained(
+    model_path,
+    use_fast=False,
+    trust_remote_code=True
+)
+
 
 class StopOnTokens(StoppingCriteria):
     def __call__(self, input_ids: torch.LongTensor, scores: torch.FloatTensor, **kwargs) -> bool:
@@ -27,12 +37,11 @@ class StopOnTokens(StoppingCriteria):
 
 
 def predict(message, history, request: gr.Request):
-
     history_transformer_format = history + [[message, ""]]
     stop = StopOnTokens()
 
-    messages = "".join(["".join(["\n<human>:"+item[0], "\n<bot>:"+item[1]])  #curr_system_message +
-                for item in history_transformer_format])
+    messages = "".join(["".join(["\n<human>:" + item[0], "\n<bot>:" + item[1]])  # curr_system_message +
+                        for item in history_transformer_format])
 
     model_inputs = tokenizer([messages], return_tensors="pt").to("cuda")
     streamer = TextIteratorStreamer(tokenizer, timeout=10., skip_prompt=True, skip_special_tokens=True)
@@ -46,7 +55,7 @@ def predict(message, history, request: gr.Request):
         temperature=1.0,
         num_beams=1,
         stopping_criteria=StoppingCriteriaList([stop])
-        )
+    )
     t = Thread(target=model.generate, kwargs=generate_kwargs)
     t.start()
 

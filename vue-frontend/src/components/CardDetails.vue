@@ -1,6 +1,6 @@
 <script setup>
 import {onMounted, ref} from 'vue'
-import {Back, Star} from "@element-plus/icons-vue";
+import {Back, Search, Star} from "@element-plus/icons-vue";
 import axios from "axios";
 
 const backendURL = ref('https://callme.agileserve.org.cn:30941')
@@ -99,18 +99,44 @@ function back() {
 </script>
 
 <template>
-  <div class="common-layout">
+  <div class="layout">
     <el-container class="container">
-      <el-header class="header">
-        <el-button :icon="Back" @click="back" circle></el-button>
-        <!--        <el-icon size="25" class="logo"><House/></el-icon>-->
+      <el-header class="navbar">
+        <el-icon size="25" class="logo"><House/></el-icon>
+        <el-input
+            v-model="input"
+            class="searchbar"
+            size="large"
+            placeholder="Search..."
+            :prefix-icon="Search"
+            clearable
+            disabled
+        />
         <el-button class="login-text" v-if="!username" @click="authenticate" text>Login</el-button>
-        <el-button class="login-text" v-else @click="user" text>{{ username }}</el-button>
+        <el-dropdown>
+          <span class="el-dropdown-link">
+            {{ username }}
+          </span>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item @click="myquestion" disabled>我的问题</el-dropdown-item>
+              <el-dropdown-item @click="myfavorite" disabled>我的收藏</el-dropdown-item>
+              <el-dropdown-item @click="logout" divided>退出登录</el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
       </el-header>
+<!--        <el-button :icon="Back" @click="back" circle></el-button>-->
+<!--      </el-header>-->
       <el-container>
+        <el-header>
+          <el-menu class="menu" mode="horizontal" center :ellipsis="false">
+            <el-menu-item index="1" @click="back" :icon="Back"></el-menu-item>
+          </el-menu>
+        </el-header>
         <el-container>
           <el-main>
-            <el-divider></el-divider>
+<!--            <el-divider></el-divider>-->
             <el-card class="box-card" shadow="never">
               <template #header>
                 <div class="card-header">
@@ -142,6 +168,35 @@ function back() {
 
 
 <style scoped>
+.layout {
+  display: -webkit-flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0;
+  margin: 0;
+  height: 100vh;
+  width: 100vw;
+}
+
+.container {
+  height: 95vh;
+  width: 100vw;
+  justify-content: space-between;
+  padding: 0 0;
+  margin: 0;
+}
+
+.navbar {
+  display: -webkit-inline-flex;
+  height: 5vh;
+  align-items: center;
+}
+
+.searchbar {
+  height: 40px;
+}
+
+
 .container {
   height: 90vh;
   width: 75vw;
@@ -150,12 +205,6 @@ function back() {
 
 .footer {
   height: 10px;
-}
-
-.common-layout {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
 }
 
 .header {

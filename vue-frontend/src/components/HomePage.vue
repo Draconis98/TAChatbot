@@ -40,7 +40,7 @@ onMounted(() => {
       // userID = window.location.href.split('userID=')[1];
       let userID = window.sessionStorage.getItem('userID');
       console.log(userID)
-      if (userID!=null){
+      if (userID != null) {
         axios.get('http://127.0.0.1:8080/get/username?userID=' + userID)
             .then((response) => {
               console.log(response.data);
@@ -60,6 +60,14 @@ onMounted(() => {
       // console.log(username.value);
     }
 )
+
+function myquestion() {
+  // TODO: 跳转到我的问题页面
+}
+
+function myfavorite() {
+  // TODO: 跳转到我的收藏页面
+}
 
 function logout() {
   console.log('退出登录');
@@ -94,6 +102,7 @@ function createNewQuestion() {
   if (!username.value) {
     alert('请先登录');
     authenticate();
+    return;
   }
   console.log('创建一个新的卡片来记录问题');
   // let userID = window.location.href.split('userID=')[1];
@@ -180,7 +189,7 @@ onMounted(() => {
             </el-dropdown-menu>
           </template>
         </el-dropdown>
-<!--        <el-button class="login-text" v-else @click="user" text>{{ username }}</el-button>-->
+        <!--        <el-button class="login-text" v-else @click="user" text>{{ username }}</el-button>-->
       </el-header>
       <el-container>
         <el-header>
@@ -208,7 +217,9 @@ onMounted(() => {
                     </div>
                   </template>
                   <div class="card-body">
-                    {{ card.content }}
+                    <div v-for="i in card.content.length">
+                      {{ card.content[i] }}
+                    </div>
                   </div>
                   <template #footer>
                     <div class="card-footer">

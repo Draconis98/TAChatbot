@@ -7,6 +7,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"os"
 )
 
 var gitlab_config *oauth2.Config
@@ -15,8 +16,8 @@ var gitlab_config *oauth2.Config
 
 func getGitLabOAuthConfig() string {
 	gitlab_config = &oauth2.Config{
-		ClientID:     "fde4604874a9d50ba861871b344095b3c8c55af513d745d371b0f2107d45f3ef",       // "GithubID"
-		ClientSecret: "gloas-7c56cc2423a1db1644c94b0000b2afd995dbc5d9ad2e3bfeba089bef4987e520", // "GithubSecret"
+		ClientID:     os.Getenv("GITLAB_CLIENTID"), // "GithubID"
+		ClientSecret: os.Getenv("GITLAB_SECRET"),   // "GithubSecret"
 		Scopes:       []string{"read_user"},
 		Endpoint: oauth2.Endpoint{
 			AuthURL:  "https://gitlab.agileserve.org.cn:8001/oauth/authorize",

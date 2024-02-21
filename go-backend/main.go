@@ -3,7 +3,6 @@ package main
 import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	"github.com/unrolled/secure"
 	"go-backend/api"
 	"go-backend/internal/repository"
 	"log"
@@ -32,7 +31,7 @@ func main() {
 		AllowCredentials: true,
 	}))
 
-	router.Use(LoadTls())
+	//router.Use(LoadTls())
 
 	// register the routes
 	// TODO: auth这部分，现在如果用户碰巧手动输入了一个正确的userid的话，会进到别的用户的界面中
@@ -70,21 +69,25 @@ func main() {
 		showGroup.GET("/hottest", api.ShowHottest)
 	}
 
-	if err := router.RunTLS("10.30.19.40:8080", "/home/jss40/.vite-plugin-mkcert/rootCA.pem", "/home/jss40/.vite-plugin-mkcert/rootCA-key.pem"); err != nil {
+	//if err := router.RunTLS("10.30.19.40:8080", "/home/jss40/.vite-plugin-mkcert/rootCA.pem", "/home/jss40/.vite-plugin-mkcert/rootCA-key.pem"); err != nil {
+	//	log.Panic(err)
+	//}
+
+	if err := router.Run("10.30.19.40:8080"); err != nil {
 		log.Panic(err)
 	}
 }
 
-func LoadTls() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		middleware := secure.New(secure.Options{
-			SSLRedirect: true,
-			SSLHost:     "10.30.19.40:8080",
-		})
-		err := middleware.Process(c.Writer, c.Request)
-		if err != nil {
-			log.Println(err)
-			return
-		}
-	}
-}
+//func LoadTls() gin.HandlerFunc {
+//	return func(c *gin.Context) {
+//		middleware := secure.New(secure.Options{
+//			SSLRedirect: true,
+//			SSLHost:     "10.30.19.40:8080",
+//		})
+//		err := middleware.Process(c.Writer, c.Request)
+//		if err != nil {
+//			log.Println(err)
+//			return
+//		}
+//	}
+//}

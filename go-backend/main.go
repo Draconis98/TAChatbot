@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/unrolled/secure"
 	"go-backend/api"
 	"go-backend/internal/repository"
 	"log"
@@ -23,13 +24,15 @@ func main() {
 		AllowOrigins: []string{
 			"http://localhost:8081",
 			"http://127.0.0.1:8081",
-			"http://10.30.19.40:8081",
+			"https://10.30.19.40:8081",
 		},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization"},
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
 	}))
+
+	router.Use(LoadTls())
 
 	// register the routes
 	// TODO: auth这部分，现在如果用户碰巧手动输入了一个正确的userid的话，会进到别的用户的界面中
@@ -67,7 +70,21 @@ func main() {
 		showGroup.GET("/hottest", api.ShowHottest)
 	}
 
-	if err := router.Run("10.30.19.40:8080"); err != nil {
+	if err := router.RunTLS("10.30.19.40:8080", "/home/jss40/assistant/10.30.19.40.pem", "/home/jss40/assistant/10.30.19.40-key.pem"); err != nil {
 		log.Panic(err)
+	}
+}
+
+func LoadTls() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		middleware := secure.New(secure.Options{
+			SSLRedirect: true,
+			SSLHost:     "10.30.19.40:8080",
+		})
+		err := middleware.Process(c.Writer, c.Request)
+		if err != nil {
+			log.Println(err)
+			return
+		}
 	}
 }

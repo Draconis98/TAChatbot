@@ -11,7 +11,7 @@ type Card struct {
 	UserID         primitive.ObjectID   `json:"userID" bson:"userID"`
 	Title          string               `json:"title" bson:"title"`
 	Tags           []primitive.ObjectID `json:"tags" bson:"tags"`
-	Content        string               `json:"content" bson:"content"`
+	Content        []string             `json:"content" bson:"content"`
 	Questions      []primitive.ObjectID `json:"questions" bson:"questions"`
 	FavoritesCount int                  `json:"favoritesCount" bson:"favoritesCount"`
 	Summary        string               `json:"summary" bson:"summary"`

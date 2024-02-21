@@ -24,6 +24,7 @@ func main() {
 			"http://localhost:8081",
 			"http://127.0.0.1:8081",
 			"https://10.30.19.40:8081",
+			"https://callme.agileserve.org.cn:30940",
 		},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization"},

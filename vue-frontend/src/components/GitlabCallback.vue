@@ -16,7 +16,7 @@ onMounted(() => {
                     if (response.data.error === null) {
                       window.sessionStorage.setItem('userID', response.data.userID);
                       // window.location.href = 'http://127.0.0.1:8081/?userID=' + response.data.userID;
-                      window.location.href = 'http://127.0.0.1:8081';
+                      window.location.href = '10.30.19.40:8081';
                     } else {
                       console.log(response.data.error);
                     }

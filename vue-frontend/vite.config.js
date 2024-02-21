@@ -34,7 +34,7 @@ export default defineConfig({
             changeOrigin: true,
         },
     },
-    host: '127.0.0.1',
+	  host: '10.30.19.40',
     port: 8081
   }
 })

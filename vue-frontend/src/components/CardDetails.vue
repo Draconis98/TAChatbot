@@ -243,14 +243,6 @@ function back() {
   margin-right: 10px;
 }
 
-.login-text {
-  cursor: pointer;
-  color: blue;
-  text-decoration: underline;
-  padding: 5px 10px;
-  margin-left: auto;
-}
-
 .w-50 .m-2 {
   width: 80%;
   padding: 0 10px;

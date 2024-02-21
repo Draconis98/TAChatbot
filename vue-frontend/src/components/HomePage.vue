@@ -193,10 +193,10 @@ onMounted(() => {
       </el-header>
       <el-container>
         <el-header>
-          <el-menu class="menu" mode="horizontal" center>
+          <el-menu class="menu" mode="horizontal" center :ellipsis="false">
             <el-menu-item index="1" @click="latest">按最新排序</el-menu-item>
             <el-menu-item index="2" @click="hottest" disabled>按最热排序</el-menu-item>
-            <el-menu-item index="3" @click="createNewQuestion" style="margin-right: auto">创建新问题</el-menu-item>
+            <el-menu-item index="3" @click="createNewQuestion">创建新问题</el-menu-item>
           </el-menu>
         </el-header>
         <el-container>

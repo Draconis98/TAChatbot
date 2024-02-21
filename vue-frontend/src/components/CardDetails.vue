@@ -203,6 +203,15 @@ function back() {
   padding: 0 10px;
 }
 
+.el-dropdown-link {
+  cursor: pointer;
+  color: #329eff;
+  text-decoration: underline;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+}
+
 .container {
   height: 90vh;
   width: 75vw;

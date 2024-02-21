@@ -5,6 +5,8 @@ from transformers.generation.utils import GenerationConfig
 from threading import Thread
 from peft import PeftModel
 from registory import my_chat_interface as chat_interface
+import registory.utils
+
 
 model_path = "/LLM/baichuan/Baichuan2-7B-Chat"
 lora_path = "/LLM/baichuan/FT/A100-7B-Chat-2048-64-16-16-2-1e-5-constant_self_instruct_eval-a/checkpoint-797/"
@@ -23,7 +25,8 @@ class StopOnTokens(StoppingCriteria):
                 return True
         return False
 
-def predict(message, history):
+
+def predict(message, history, request: gr.Request):
 
     history_transformer_format = history + [[message, ""]]
     stop = StopOnTokens()
@@ -53,8 +56,7 @@ def predict(message, history):
             partial_message += new_token
             yield partial_message
 
-    t.join()
-
+    registory.utils.record_question(request, message, partial_message)
 
 
 if __name__ == "__main__":

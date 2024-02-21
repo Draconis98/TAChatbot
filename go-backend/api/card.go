@@ -32,7 +32,7 @@ func NewCard(r *gin.Context) {
 		UserID:         _userID,
 		Title:          "",
 		Tags:           []primitive.ObjectID{},
-		Content:        []model.QA{},
+		Content:        "",
 		Summary:        "",
 		Questions:      []primitive.ObjectID{},
 		FavoritesCount: 0,

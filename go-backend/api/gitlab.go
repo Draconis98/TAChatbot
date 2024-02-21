@@ -1,26 +1,28 @@
 package api
 
 import (
+	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/oauth2"
+	"io"
 	"log"
 	"net/http"
 )
 
 var gitlab_config *oauth2.Config
 
-var Endpoint = oauth2.Endpoint{
-	AuthURL:  "https://gitlab.agileserve.org.cn:8001/oauth/authorize",
-	TokenURL: "https://gitlab.agileserve.org.cn:8001/oauth/token",
-}
+//var Endpoint =
 
 func getGitLabOAuthConfig() string {
 	gitlab_config = &oauth2.Config{
-		ClientID:     "fde4604874a9d50ba861871b344095b3c8c55af513d745d371b0f2107d45f3ef",             // "GithubID"
-		ClientSecret: "gloas-gloas-40765d36cb320010098669d88cb29845ea819e51eb38935099b98c062d47b436", // "GithubSecret"
+		ClientID:     "fde4604874a9d50ba861871b344095b3c8c55af513d745d371b0f2107d45f3ef",       // "GithubID"
+		ClientSecret: "gloas-7c56cc2423a1db1644c94b0000b2afd995dbc5d9ad2e3bfeba089bef4987e520", // "GithubSecret"
 		Scopes:       []string{"read_user"},
-		Endpoint:     Endpoint,
-		RedirectURL:  "http://127.0.0.1:8081/callback/gitlab",
+		Endpoint: oauth2.Endpoint{
+			AuthURL:  "https://gitlab.agileserve.org.cn:8001/oauth/authorize",
+			TokenURL: "https://gitlab.agileserve.org.cn:8001/oauth/token",
+		},
+		RedirectURL: "http://127.0.0.1:8081/callback/gitlab",
 	}
 
 	return gitlab_config.AuthCodeURL("callme")
@@ -36,9 +38,8 @@ func GitLabOAuth(r *gin.Context) {
 
 func GitLabCallback(r *gin.Context) {
 	code := r.Query("code")
-	log.Println(code)
 
-	_, err := gitlab_config.Exchange(r, code)
+	token, err := gitlab_config.Exchange(r, code)
 	if err != nil {
 		log.Println("Error during exchange: ", err)
 		r.JSON(404, gin.H{
@@ -47,33 +48,33 @@ func GitLabCallback(r *gin.Context) {
 		return
 	}
 
-	//username, done := getInfo(r, token, "user", err)
-	//if done {
-	//	return
-	//}
-	//
-	//email, done := getInfo(r, token, "email", err)
-	//if done {
-	//	return
-	//}
+	client := gitlab_config.Client(r, token)
+	resp, err := client.Get("https://gitlab.agileserve.org.cn:8001/api/v4/user")
+	if err != nil {
+		log.Println("Error during get: ", err)
+		r.JSON(http.StatusUnauthorized, gin.H{
+			"error": err.Error(),
+		})
+	}
+
+	info, err := io.ReadAll(resp.Body)
+	if err != nil {
+		log.Println("Error during read: ", err)
+		r.JSON(http.StatusUnauthorized, gin.H{
+			"error": err.Error(),
+		})
+	}
+
+	var user map[string]interface{}
+	if err = json.Unmarshal(info, &user); err != nil {
+		log.Println("Error during unmarshal: ", err)
+		r.JSON(http.StatusUnauthorized, gin.H{
+			"error": err.Error(),
+		})
+	}
 
 	r.JSON(http.StatusOK, gin.H{
-		"username": "username",
-		"email":    "email",
+		"username": user["username"],
+		"email":    user["email"],
 	})
 }
-
-//func getInfo(r *gin.Context, token *oauth2.Token, info string, err error) (string, bool) {
-//	client := gitlab_config.Client(r, token)
-//	var resp *http.Response
-//	resp, err = client.Get("https://gitlab.agileserve.org.cn:8001/api/v4/user")
-//	if err != nil {
-//		log.Println("Error during get: ", err)
-//		r.JSON(http.StatusUnauthorized, gin.H{
-//			"error": err.Error(),
-//		})
-//		return "", true
-//	}
-//	print(resp.Body)
-//	return "", false
-//}

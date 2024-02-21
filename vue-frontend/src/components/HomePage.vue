@@ -150,7 +150,7 @@ function card_details(cardID) {
 }
 
 onMounted(() => {
-  axios.get(backendURL + '/show/')
+  axios.get('https://callme.agileserve.org.cn:30941/show/')
       .then((response) => {
         cards.value = response.data.card_list;
         console.log(cards.value);

@@ -1,22 +1,24 @@
 <script setup>
 import axios from "axios";
-import {onMounted} from "vue";
+import {onMounted, ref} from "vue";
+
+const backendURL = ref('https://callme.agileserve.org.cn:30941')
 
 onMounted(() => {
       let code = window.location.href.split('code=')[1];
       if (code) {
-        axios.get('http://10.30.19.40:8080/callback/gitlab?code=' + code)
+        axios.get(backendURL + '/callback/gitlab?code=' + code)
             .then((response) => {
               console.log(response.data);
               let username = response.data.username;
               let email = response.data.email;
-              axios.get('http://10.30.19.40:8080/check/user?username=' + username + '&email=' + email)
+              axios.get(backendURL + '/check/user?username=' + username + '&email=' + email)
                   .then((response) => {
                     console.log(response.data);
                     if (response.data.error === null) {
                       window.sessionStorage.setItem('userID', response.data.userID);
                       // window.location.href = 'http://10.30.19.40:8081/?userID=' + response.data.userID;
-                      window.location.href = '10.30.19.40:8081';
+                      window.location.href = 'https://callme.agileserve.org.cn:30940';
                     } else {
                       console.log(response.data.error);
                     }

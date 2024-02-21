@@ -23,7 +23,7 @@ func getGitLabOAuthConfig() string {
 			AuthURL:  "https://gitlab.agileserve.org.cn:8001/oauth/authorize",
 			TokenURL: "https://gitlab.agileserve.org.cn:8001/oauth/token",
 		},
-		RedirectURL: "http://127.0.0.1:8081/callback/gitlab",
+		RedirectURL: "https://callme.agileserve.org.cn:30940/callback/gitlab",
 	}
 
 	return gitlab_config.AuthCodeURL("callme")

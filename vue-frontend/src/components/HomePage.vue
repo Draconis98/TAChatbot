@@ -3,6 +3,7 @@ import {onMounted, ref} from 'vue'
 import {Search, Star} from "@element-plus/icons-vue";
 import axios from "axios";
 
+const backendURL = ref('https://callme.agileserve.org.cn:30941')
 const input = ref('')
 const isStar = ref(false)
 const count = ref(0)
@@ -20,7 +21,7 @@ function onChange(status) {
 }
 
 function authenticate() {
-  axios.get('http://10.30.19.40:8080/auth')
+  axios.get(backendURL + '/auth')
       .then((response) => {
             console.log(response.data);
             // 解析url
@@ -41,7 +42,7 @@ onMounted(() => {
       let userID = window.sessionStorage.getItem('userID');
       console.log(userID)
       if (userID != null) {
-        axios.get('http://10.30.19.40:8080/get/username?userID=' + userID)
+        axios.get(backendURL + '/get/username?userID=' + userID)
             .then((response) => {
               console.log(response.data);
               window.sessionStorage.setItem('username', response.data.username);
@@ -108,7 +109,7 @@ function createNewQuestion() {
   // let userID = window.location.href.split('userID=')[1];
   let userID = window.sessionStorage.getItem('userID');
   console.log(userID)
-  axios.get('http://10.30.19.40:8080/new/card?userID=' + userID)
+  axios.get(backendURL + '/new/card?userID=' + userID)
       .then((response) => {
         console.log(response.data);
         window.sessionStorage.setItem('cardID', response.data.cardID);
@@ -121,7 +122,7 @@ function createNewQuestion() {
 }
 
 function getCardsSortedByLatest() {
-  axios.get('https://callme.agileserve.org.cn:30941/show/latest')
+  axios.get(backendURL + '/show/latest')
       .then((response) => {
         cards.value = response.data.card_list;
         console.log(cards.value);
@@ -132,7 +133,7 @@ function getCardsSortedByLatest() {
 }
 
 function getCardsSortedByHottest() {
-  axios.get('http://10.30.19.40:8080/show/hottest')
+  axios.get(backendURL + '/show/hottest')
       .then((response) => {
         cards.value = response.data.card_list;
         console.log(cards.value);
@@ -149,7 +150,7 @@ function card_details(cardID) {
 }
 
 onMounted(() => {
-  axios.get('https://callme.agileserve.org.cn:30941/show/')
+  axios.get(backendURL + '/show/')
       .then((response) => {
         cards.value = response.data.card_list;
         console.log(cards.value);

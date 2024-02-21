@@ -14,6 +14,11 @@ const router = createRouter({
             component: () => import('@/components/GithubCallback.vue')
         },
         {
+            path: '/callback/gitlab',
+            name: 'GitlabCallback',
+            component: () => import('@/components/GitlabCallback.vue')
+        },
+        {
             path: '/logged',
             name: 'Logged',
             component: () => import('@/components/Logged.vue')

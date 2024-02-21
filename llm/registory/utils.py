@@ -24,9 +24,9 @@ class mongodb:
 def record_question(request, message, partial_message):
     db = mongodb("localhost", "llm")
     question_id = db.insert("questions",
-                    {"question": message,
-                     "answer": partial_message}
-                    ).inserted_id
+                            {"question": message,
+                             "answer": partial_message}
+                            ).inserted_id
     referer = request.headers["referer"]
     # 确定用户ID和卡片ID的类型
     card_id = referer.split("cardID=")[-1]
@@ -37,4 +37,5 @@ def record_question(request, message, partial_message):
 
     # print(question_id, card_id)
     db.update("users", {"_id": _user_id}, {"$push": {"questions": question_id}})
-    db.update("cards", {"_id": _card_id}, {"$push": {"questions": question_id, "content": {"question": message, "answer": partial_message}}})
+    db.update("cards", {"_id": _card_id}, {"$push": {"questions": question_id, "content": "Q:" + message}})
+    db.update("cards", {"_id": _card_id}, {"$push": {"content": "A:" + partial_message}})

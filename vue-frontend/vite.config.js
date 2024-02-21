@@ -33,8 +33,9 @@ export default defineConfig({
     server: {
         proxy: {
             '/api': {
-                target: 'https://10.30.19.40:8080',
+                // target: 'https://10.30.19.40:8080',
                 changeOrigin: true,
+                target: 'https://callme.agileserve.org.cn:30941'
             },
         },
         host: '10.30.19.40',

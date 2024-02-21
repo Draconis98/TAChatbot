@@ -23,6 +23,7 @@ func main() {
 		AllowOrigins: []string{
 			"http://localhost:8081",
 			"http://127.0.0.1:8081",
+			"http://10.30.19.40:8081",
 		},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization"},

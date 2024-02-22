@@ -35,7 +35,20 @@ def record_question(request, message, partial_message):
     _card_id = ObjectId(card_id)
     _user_id = ObjectId(user_id)
 
+    # 查看新问题与当前卡片记录的最后一个问题是否相同
+    card = db.db["cards"].find_one({"_id": _card_id})
+    last_question_id = card["questions"][-1]
+    _last_question_id = ObjectId(last_question_id)
+    question = db.db["questions"].find_one({"_id": _last_question_id})
+    print(question["question"])
+    if question["question"] == message:
+        db.update("cards", {"_id": _card_id}, {"$pop": {"questions": -1}})
+
+        db.update("cards", {"_id": _card_id}, {"$pop": {"content": -1}})
+        db.update("cards", {"_id": _card_id}, {"$pop": {"content": -1}})
+
     # print(question_id, card_id)
     db.update("users", {"_id": _user_id}, {"$push": {"questions": question_id}})
     db.update("cards", {"_id": _card_id}, {"$push": {"questions": question_id, "content": "Q:" + message}})
     db.update("cards", {"_id": _card_id}, {"$push": {"content": "A:" + partial_message}})
+

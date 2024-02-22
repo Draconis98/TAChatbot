@@ -146,7 +146,8 @@ function getCardsSortedByHottest() {
 function card_details(cardID) {
   console.log('查看卡片详');
   console.log(cardID);
-  window.location.href = '/card/details?cardID=' + cardID;
+  window.sessionStorage.setItem('cardID', cardID);
+  window.location.href = '/card/details';
 }
 
 onMounted(() => {
@@ -206,7 +207,7 @@ onMounted(() => {
                 <el-card class="box-card" shadow="hover" @click="card_details(card.id)">
                   <template #header>
                     <div class="card-header">
-                      <span>#{{ card.id }}</span>
+                      <span>#{{ card.id.slice(10) }}</span>
                       <el-button-group>
                         <!-- TODO: 如果用户已经收藏了这个问题，那么显示实心的星星，否则显示空心的星星 -->
                         热度{{ card.favoritesCount }}
@@ -222,7 +223,7 @@ onMounted(() => {
                     <div class="card-footer">
                       <span>{{ card.create_at }}</span>
                       <el-tag effect="light" type="info">
-                        tag1
+<!--                        tag1-->
                       </el-tag>
                     </div>
                   </template>

@@ -3,7 +3,7 @@ import {onMounted, ref} from 'vue'
 import {Search, Star} from "@element-plus/icons-vue";
 import axios from "axios";
 
-const backendURL = ref('https://callme.agileserve.org.cn:30941')
+const backendURL = ref('http://127.0.0.1:8080')
 const input = ref('')
 const isStar = ref(false)
 const count = ref(0)
@@ -233,10 +233,8 @@ onMounted(() => {
         </el-container>
       </el-container>
       <el-footer class="footer">
-        <div class="affix">
-          <el-affix position="bottom" :offset="10">
-            本平台仅供学习使用，请勿做其他用途；生成式回答，内容仅供参考。
-          </el-affix>
+        <div class="claim">
+          本平台仅供学习使用，请勿做其他用途；生成式回答，内容仅供参考。
         </div>
       </el-footer>
     </el-container>
@@ -359,7 +357,7 @@ onMounted(() => {
   margin-top: 10px;
 }
 
-.affix {
+.claim {
   text-align: center;
   font-size: 14px;
 }

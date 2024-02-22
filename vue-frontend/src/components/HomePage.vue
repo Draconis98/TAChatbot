@@ -289,16 +289,6 @@ onMounted(() => {
   padding: 0 10px;
 }
 
-
-
-
-
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
 .footer {
   height: 10px;
 }
@@ -316,13 +306,6 @@ onMounted(() => {
   height: 3px;
 }
 
-.card-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 5px;
-}
-
 .card-body {
   display: -webkit-box;
   justify-content: space-between;
@@ -336,6 +319,13 @@ onMounted(() => {
   -webkit-line-clamp: 3;
 }
 
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 5px;
+}
+
 .logo {
   width: 25px;
   height: 25px;
@@ -343,10 +333,6 @@ onMounted(() => {
   align-items: center;
   margin-right: 10px;
 }
-
-
-
-
 
 .box-card {
   width: 100%;
@@ -375,5 +361,6 @@ onMounted(() => {
 
 .affix {
   text-align: center;
+  font-size: 14px;
 }
 </style>

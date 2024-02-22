@@ -33,6 +33,23 @@ function authenticate() {
       });
 }
 
+
+function myquestion() {
+  // TODO: 跳转到我的问题页面
+}
+
+function myfavorite() {
+  // TODO: 跳转到我的收藏页面
+}
+
+function logout() {
+  console.log('退出登录');
+  window.sessionStorage.removeItem('userID');
+  window.sessionStorage.removeItem('username');
+  window.sessionStorage.removeItem('cardID');
+  window.location.href = '/';
+}
+
 onMounted(() => {
       console.log('mounted');
       // userID = window.location.href.split('userID=')[1];
@@ -102,7 +119,9 @@ function back() {
   <div class="layout">
     <el-container class="container">
       <el-header class="navbar">
-        <el-icon size="25" class="logo"><House/></el-icon>
+        <el-icon size="25" class="logo">
+          <House/>
+        </el-icon>
         <el-input
             v-model="input"
             class="searchbar"
@@ -126,17 +145,14 @@ function back() {
           </template>
         </el-dropdown>
       </el-header>
-<!--        <el-button :icon="Back" @click="back" circle></el-button>-->
-<!--      </el-header>-->
       <el-container>
         <el-header>
           <el-menu class="menu" mode="horizontal" center :ellipsis="false">
-            <el-menu-item index="1" @click="back" :icon="Back"></el-menu-item>
+            <el-menu-item index="1" @click="back" :icon="Back">返回首页</el-menu-item>
           </el-menu>
         </el-header>
         <el-container>
           <el-main>
-<!--            <el-divider></el-divider>-->
             <el-card class="box-card" shadow="never">
               <template #header>
                 <div class="card-header">
@@ -212,20 +228,20 @@ function back() {
   padding: 0 10px;
 }
 
-.container {
-  height: 90vh;
-  width: 75vw;
-  justify-content: space-between;
-}
-
 .footer {
   height: 10px;
 }
 
-.header {
-  display: flex;
-  justify-content: space-between;
+.menu {
+  display: -webkit-flex;
+  justify-content: start;
   align-items: center;
+}
+
+.container {
+  height: 90vh;
+  width: 75vw;
+  justify-content: space-between;
 }
 
 .card-header {
@@ -241,11 +257,6 @@ function back() {
   justify-items: center;
   align-items: center;
   margin-right: 10px;
-}
-
-.w-50 .m-2 {
-  width: 80%;
-  padding: 0 10px;
 }
 
 .infinite-list .infinite-list-item {
@@ -264,5 +275,6 @@ function back() {
 
 .affix {
   text-align: center;
+  font-size: 14px;
 }
 </style>

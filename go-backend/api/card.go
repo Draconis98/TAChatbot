@@ -36,7 +36,7 @@ func NewCard(r *gin.Context) {
 		Summary:        "",
 		Questions:      []primitive.ObjectID{},
 		FavoritesCount: 0,
-		CreateAt:       time.Now(),
+		CreateAt:       time.Now().Format("2006-01-02 15:04:05"),
 	}
 
 	card, err := c.NewCard(r, newCard)

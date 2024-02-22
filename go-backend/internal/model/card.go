@@ -2,7 +2,6 @@ package model
 
 import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"time"
 )
 
 // Card is a model for card
@@ -15,5 +14,5 @@ type Card struct {
 	Questions      []primitive.ObjectID `json:"questions" bson:"questions"`
 	FavoritesCount int                  `json:"favoritesCount" bson:"favoritesCount"`
 	Summary        string               `json:"summary" bson:"summary"`
-	CreateAt       time.Time            `json:"create_at" bson:"create_at"`
+	CreateAt       string               `json:"create_at" bson:"create_at"`
 }

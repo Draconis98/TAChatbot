@@ -2,7 +2,6 @@
 This file defines a useful high-level abstraction to build Gradio chatbots: ChatInterface.
 """
 
-
 from __future__ import annotations
 
 import inspect
@@ -31,12 +30,61 @@ from gradio.routes import Request
 from gradio.themes import ThemeClass as Theme
 from gradio.utils import SyncToAsyncIterator, async_iteration
 
+from registory.utils import mongodb
+from bson.objectid import ObjectId
+import logging
 
-def vote(data: gradio.LikeData) -> None:
-    if data.liked:
-        print("User liked the response")
+
+def get_user_and_card_id(referer: str) -> tuple:
+    """
+    Extracts and returns the user ID and card ID from the referer URL.
+    """
+    card_id = referer.split("cardID=")[-1]
+    user_id = referer.split("userID=")[-1].split("&")[0]
+    return user_id, card_id
+
+
+def update_question_like_status(db, question_id: str, user_id: str, liked: bool) -> None:
+    """
+    Updates the like status of a question in the database and logs the action.
+    """
+    like_status = 1 if liked else 2
+    action = "liked" if liked else "unliked"
+
+    update_result = db.db["questions"].update_one(
+        {"_id": ObjectId(question_id)},
+        {"$set": {"like": like_status}}
+    )
+
+    if update_result.modified_count:
+        logging.info(f"User {user_id} {action} the question {question_id}")
     else:
-        print("User disliked the response")
+        logging.error(f"Failed to update like status for question {question_id}")
+
+
+def vote(data: gradio.LikeData, request: gradio.Request) -> None:
+    referer = request.headers.get("referer")
+    if not referer:
+        logging.warning("No referer found in the request.")
+        return
+
+    user_id, card_id = get_user_and_card_id(referer)
+    db = mongodb("localhost", "llm")
+
+    card = db.db["cards"].find_one({"_id": ObjectId(card_id)})
+    if not card:
+        logging.error(f"Card with ID {card_id} not found.")
+        return
+
+    question_ids = card.get("questions", [])
+    for question_id in question_ids:
+        question = db.db["questions"].find_one({"_id": ObjectId(question_id)})
+        if not question:
+            logging.error(f"Question with ID {question_id} not found.")
+            continue
+
+        if question["answer"] == data.value:
+            update_question_like_status(db, question_id, user_id, data.liked)
 
 
 @document()
@@ -60,31 +108,31 @@ class ChatInterface(Blocks):
     """
 
     def __init__(
-        self,
-        fn: Callable,
-        *,
-        chatbot: Chatbot | None = None,
-        textbox: Textbox | None = None,
-        additional_inputs: str | Component | list[str | Component] | None = None,
-        additional_inputs_accordion_name: str | None = None,
-        additional_inputs_accordion: str | Accordion | None = None,
-        examples: list[str] | None = None,
-        cache_examples: bool | None = None,
-        title: str | None = None,
-        description: str | None = None,
-        theme: Theme | str | None = None,
-        css: str | None = None,
-        js: str | None = None,
-        head: str | None = None,
-        analytics_enabled: bool | None = None,
-        submit_btn: str | None | Button = "Submit",
-        stop_btn: str | None | Button = "Stop",
-        retry_btn: str | None | Button = "🔄  Retry",
-        undo_btn: str | None | Button = "↩️ Undo",
-        clear_btn: str | None | Button = "🗑️  Clear",
-        autofocus: bool = True,
-        concurrency_limit: int | None | Literal["default"] = "default",
-        fill_height: bool = True,
+            self,
+            fn: Callable,
+            *,
+            chatbot: Chatbot | None = None,
+            textbox: Textbox | None = None,
+            additional_inputs: str | Component | list[str | Component] | None = None,
+            additional_inputs_accordion_name: str | None = None,
+            additional_inputs_accordion: str | Accordion | None = None,
+            examples: list[str] | None = None,
+            cache_examples: bool | None = None,
+            title: str | None = None,
+            description: str | None = None,
+            theme: Theme | str | None = None,
+            css: str | None = None,
+            js: str | None = None,
+            head: str | None = None,
+            analytics_enabled: bool | None = None,
+            submit_btn: str | None | Button = "Submit",
+            stop_btn: str | None | Button = "Stop",
+            retry_btn: str | None | Button = "🔄  Retry",
+            undo_btn: str | None | Button = "↩️ Undo",
+            clear_btn: str | None | Button = "🗑️  Clear",
+            autofocus: bool = True,
+            concurrency_limit: int | None | Literal["default"] = "default",
+            fill_height: bool = True,
     ):
         """
         Parameters:
@@ -384,7 +432,7 @@ class ChatInterface(Blocks):
             )
 
     def _setup_stop_events(
-        self, event_triggers: list[Callable], event_to_cancel: Dependency
+            self, event_triggers: list[Callable], event_to_cancel: Dependency
     ) -> None:
         if self.stop_btn and self.is_generator:
             if self.submit_btn:
@@ -447,17 +495,17 @@ class ChatInterface(Blocks):
         return "", message
 
     def _display_input(
-        self, message: str, history: list[list[str | None]]
+            self, message: str, history: list[list[str | None]]
     ) -> tuple[list[list[str | None]], list[list[str | None]]]:
         history.append([message, None])
         return history, history
 
     async def _submit_fn(
-        self,
-        message: str,
-        history_with_input: list[list[str | None]],
-        request: Request,
-        *args,
+            self,
+            message: str,
+            history_with_input: list[list[str | None]],
+            request: Request,
+            *args,
     ) -> tuple[list[list[str | None]], list[list[str | None]]]:
         history = history_with_input[:-1]
         inputs, _, _ = special_args(
@@ -475,11 +523,11 @@ class ChatInterface(Blocks):
         return history, history
 
     async def _stream_fn(
-        self,
-        message: str,
-        history_with_input: list[list[str | None]],
-        request: Request,
-        *args,
+            self,
+            message: str,
+            history_with_input: list[list[str | None]],
+            request: Request,
+            *args,
     ) -> AsyncGenerator:
         history = history_with_input[:-1]
         inputs, _, _ = special_args(
@@ -505,7 +553,7 @@ class ChatInterface(Blocks):
             yield update, update
 
     async def _api_submit_fn(
-        self, message: str, history: list[list[str | None]], request: Request, *args
+            self, message: str, history: list[list[str | None]], request: Request, *args
     ) -> tuple[str, list[list[str | None]]]:
         inputs, _, _ = special_args(
             self.fn, inputs=[message, history, *args], request=request
@@ -521,7 +569,7 @@ class ChatInterface(Blocks):
         return response, history
 
     async def _api_stream_fn(
-        self, message: str, history: list[list[str | None]], request: Request, *args
+            self, message: str, history: list[list[str | None]], request: Request, *args
     ) -> AsyncGenerator:
         inputs, _, _ = special_args(
             self.fn, inputs=[message, history, *args], request=request
@@ -554,9 +602,9 @@ class ChatInterface(Blocks):
         return [[message, response]]
 
     async def _examples_stream_fn(
-        self,
-        message: str,
-        *args,
+            self,
+            message: str,
+            *args,
     ) -> AsyncGenerator:
         inputs, _, _ = special_args(self.fn, inputs=[message, [], *args], request=None)
 
@@ -571,7 +619,7 @@ class ChatInterface(Blocks):
             yield [[message, response]]
 
     def _delete_prev_fn(
-        self, history: list[list[str | None]]
+            self, history: list[list[str | None]]
     ) -> tuple[list[list[str | None]], str, list[list[str | None]]]:
         try:
             message, _ = history.pop()

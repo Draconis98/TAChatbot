@@ -3,7 +3,7 @@ import {onMounted, ref} from 'vue'
 import {Search, Star} from "@element-plus/icons-vue";
 import axios from "axios";
 
-const backendURL = ref('http://127.0.0.1:8080')
+const backendURL = ref('10.30.19.40:8080')
 const input = ref('')
 const isStar = ref(false)
 const count = ref(0)

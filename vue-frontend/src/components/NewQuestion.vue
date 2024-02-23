@@ -3,7 +3,7 @@ import {onMounted, ref} from 'vue';
 import axios from "axios";
 import {ArrowLeftBold, Back, Search} from "@element-plus/icons-vue";
 
-// 使用ref来创建一个响应式的src属性
+const backendURL = ref('10.30.19.40:8080')
 const iframeSrc = ref('');
 const username = ref(null);
 
@@ -50,7 +50,7 @@ onMounted(() => {
   const cardID = window.sessionStorage.getItem('cardID');
   username.value = window.sessionStorage.getItem('username');
 
-  iframeSrc.value = `http://127.0.0.1:8082?userID=${userID}&cardID=${cardID}`
+  iframeSrc.value = `10.30.19.40:8082?userID=${userID}&cardID=${cardID}`
 });
 </script>
 

@@ -255,7 +255,7 @@ onMounted(() => {
 }
 
 .container {
-  height: 95vh;
+  height: 100vh;
   width: 100vw;
   justify-content: space-between;
   padding: 0 0;
@@ -289,7 +289,7 @@ onMounted(() => {
 }
 
 .footer {
-  height: 10px;
+  height: 5vh;
 }
 
 .menu {
@@ -338,7 +338,7 @@ onMounted(() => {
 }
 
 .infinite-list {
-  height: 600px;
+  height: 80vh;
   padding: 0;
   margin: 0;
   list-style: none;

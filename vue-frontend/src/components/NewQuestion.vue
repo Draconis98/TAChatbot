@@ -126,7 +126,7 @@ onMounted(() => {
 }
 
 .container {
-  height: 95vh;
+  height: 100vh;
   width: 100vw;
   justify-content: space-between;
   padding: 0 0;
@@ -160,7 +160,7 @@ onMounted(() => {
 }
 
 .footer {
-  height: 10px;
+  height: 5vh;
 }
 
 .logo {
@@ -173,7 +173,7 @@ onMounted(() => {
 
 .iframe {
   width: 100%;
-  height: 80vh;
+  height: 79.5vh;
   align-items: center;
   align-content: center;
 }

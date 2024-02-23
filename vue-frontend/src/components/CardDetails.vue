@@ -1,17 +1,22 @@
 <script setup>
 import {onMounted, ref} from 'vue'
-import {Back, Search, Star} from "@element-plus/icons-vue";
+import {ArrowLeftBold, CircleCloseFilled, Search, Star, SuccessFilled} from "@element-plus/icons-vue";
 import axios from "axios";
 
-const backendURL = ref('https://callme.agileserve.org.cn:30941')
+const backendURL = ref('http://127.0.0.1:8080')
 const input = ref('')
-const username = ref('')
+const username = ref(null)
 const isStar = ref(false)
+const card_id = ref('')
 let card_data = ref({})
 let qa_id = ref([])
 let qa_data = ref([])
 let count = ref(0)
 
+const load = () => {
+  console.log('加载更多');
+  count.value += 3;
+}
 
 function user() {
   console.log('用户信息');
@@ -77,20 +82,20 @@ onMounted(() => {
 )
 
 onMounted(() => {
-  let card_id = window.location.href.split('cardID=')[1]
-  axios.get(backendURL.value + '/get/card?cardID=' + card_id)
+  // let card_id = window.location.href.split('cardID=')[1]
+  card_id.value = window.sessionStorage.getItem('cardID');
+  console.log("card id: ", card_id.value)
+  axios.get(backendURL.value + '/get/card?cardID=' + card_id.value)
       .then((response) => {
         card_data = response.data.card;
         console.log(card_data);
         qa_id = card_data.questions;
-        console.log(qa_id)
-        // 遍历qa_id
+        console.log(qa_id);
         for (let i = 0; i < qa_id.length; i++) {
           console.log(qa_id[i])
           axios.get(backendURL.value + '/get/question?questionID=' + qa_id[i])
               .then((response) => {
-                qa_data.value.push("Q: " + response.data.question);
-                qa_data.value.push("A: " + response.data.answer);
+                qa_data.value[i] = response.data;
               }).catch((error) => {
             console.log('获取问题失败\n', error);
           });
@@ -148,7 +153,12 @@ function back() {
       <el-container>
         <el-header>
           <el-menu class="menu" mode="horizontal" center :ellipsis="false">
-            <el-menu-item index="1" @click="back" :icon="Back">返回首页</el-menu-item>
+            <el-menu-item index="1" @click="back">
+              <el-icon>
+                <ArrowLeftBold/>
+              </el-icon>
+              返回首页
+            </el-menu-item>
           </el-menu>
         </el-header>
         <el-container>
@@ -156,26 +166,41 @@ function back() {
             <el-card class="box-card" shadow="never">
               <template #header>
                 <div class="card-header">
-                  <span>#{{ card_data.id }}</span>
+                  <span>#{{ card_id.slice(10) }}</span>
                   <el-button v-if="isStar.value===false" :icon="Star" circle disabled @click="toggleStar"></el-button>
                   <el-button v-else :icon="Star" type="warning" circle disabled @click="toggleStar"></el-button>
                 </div>
               </template>
-              <!-- 对qa数组内容按顺序输出 -->
-
-              <el-card v-for="item in qa_data" :key="item" shadow="hover">
-                {{ item }}
-              </el-card>
-
+              <el-scrollbar height="70vh">
+                <el-timeline>
+                  <el-timeline-item v-for="item in qa_data" :key="item" :timestamp="item.create_at"
+                                    placement="top">
+                    <el-card shadow="hover">
+                      <div class="question">{{ item.question }}</div>
+                      <el-divider></el-divider>
+                      <div>{{ item.answer }}
+                      <el-tooltip v-if="item.likes === 1" content="原提问者对这个答案表示满意" placement="right">
+                        <el-icon class="like" color="green">
+                          <SuccessFilled/>
+                        </el-icon>
+                      </el-tooltip>
+                      <el-tooltip v-else-if="item.likes === 2" content="原提问者对这个答案表示不满" placement="right">
+                        <el-icon class="like" color="blue">
+                          <CircleCloseFilled/>
+                        </el-icon>
+                      </el-tooltip>
+                      </div>
+                    </el-card>
+                  </el-timeline-item>
+                </el-timeline>
+              </el-scrollbar>
             </el-card>
           </el-main>
         </el-container>
       </el-container>
       <el-footer class="footer">
-        <div class="affix">
-          <el-affix position="bottom" :offset="10">
-            本平台仅供学习使用，请勿做其他用途；生成式回答，内容仅供参考。
-          </el-affix>
+        <div class="claim">
+          本平台仅供学习使用，请勿做其他用途；生成式回答，内容仅供参考。
         </div>
       </el-footer>
     </el-container>
@@ -195,7 +220,7 @@ function back() {
 }
 
 .container {
-  height: 95vh;
+  height: 100vh;
   width: 100vw;
   justify-content: space-between;
   padding: 0 0;
@@ -229,19 +254,13 @@ function back() {
 }
 
 .footer {
-  height: 10px;
+  height: 5vh;
 }
 
 .menu {
   display: -webkit-flex;
   justify-content: start;
   align-items: center;
-}
-
-.container {
-  height: 90vh;
-  width: 75vw;
-  justify-content: space-between;
 }
 
 .card-header {
@@ -259,6 +278,17 @@ function back() {
   margin-right: 10px;
 }
 
+.question {
+  font-weight: bold;
+}
+
+.like {
+  align-items: center;
+  justify-content: center;
+  align-content: center;
+  justify-items: center;
+}
+
 .infinite-list .infinite-list-item {
   display: flex;
   align-items: center;
@@ -273,7 +303,7 @@ function back() {
   margin-top: 10px;
 }
 
-.affix {
+.claim {
   text-align: center;
   font-size: 14px;
 }

@@ -215,8 +215,8 @@ onMounted(() => {
                     </div>
                   </template>
                   <div class="card-body">
-                    <div v-for="i in card.content.length">
-                      {{ card.content[i] }}
+                    <div v-for="item in card.content">
+                      {{ item }}
                     </div>
                   </div>
                   <template #footer>
@@ -315,7 +315,7 @@ onMounted(() => {
   text-overflow: ellipsis;
   //white-space: nowrap;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 4;
 }
 
 .card-footer {

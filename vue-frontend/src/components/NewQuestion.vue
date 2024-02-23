@@ -6,6 +6,7 @@ import {ArrowLeftBold, Back, Search} from "@element-plus/icons-vue";
 const backendURL = ref('https://callme.agileserve.org.cn:30941')
 const iframeSrc = ref('');
 const username = ref(null);
+const input = ref('');
 
 function authenticate() {
   axios.get(backendURL.value + '/auth')

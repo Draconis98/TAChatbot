@@ -3,7 +3,7 @@ import {onMounted, ref} from 'vue'
 import {ArrowLeftBold, CircleCloseFilled, Search, Star, SuccessFilled} from "@element-plus/icons-vue";
 import axios from "axios";
 
-const backendURL = ref('10.30.19.40:8080')
+const backendURL = ref('https://callme.agileserve.org.cn:30941')
 const input = ref('')
 const username = ref(null)
 const isStar = ref(false)

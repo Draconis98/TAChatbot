@@ -3,7 +3,7 @@ import {onMounted, ref} from 'vue';
 import axios from "axios";
 import {ArrowLeftBold, Back, Search} from "@element-plus/icons-vue";
 
-const backendURL = ref('10.30.19.40:8080')
+const backendURL = ref('https://callme.agileserve.org.cn:30941')
 const iframeSrc = ref('');
 const username = ref(null);
 
@@ -50,7 +50,7 @@ onMounted(() => {
   const cardID = window.sessionStorage.getItem('cardID');
   username.value = window.sessionStorage.getItem('username');
 
-  iframeSrc.value = `10.30.19.40:8082?userID=${userID}&cardID=${cardID}`
+  iframeSrc.value = `https://callme.agileserve.org.cn:30942/?userID=${userID}&cardID=${cardID}`
 });
 </script>
 

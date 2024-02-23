@@ -71,7 +71,7 @@ def predict(message, history, request: gr.Request):
 if __name__ == "__main__":
     chat_interface.ChatInterface(
         fn=predict,
-        chatbot=gr.Chatbot(scale=1, height=600),
+        chatbot=gr.Chatbot(scale=1, height=200),
         css="margin.css",
         undo_btn=None,
-    ).launch(server_name="10.30.19.49", server_port=8082)
+    ).launch(server_name="10.30.19.40", server_port=8082)

@@ -12,6 +12,9 @@ type CardRepo interface {
 	NewCardRepository(collection *mongo.Collection) *CardRepository
 	NewCard(card *model.Card) (*model.Card, error)
 	GetCard(id primitive.ObjectID) (*model.Card, error)
+	CheckCardExistence(userid, cardid primitive.ObjectID) (bool, error)
+	SortCard(method string) ([]model.Card, error)
+	UpdateDisplay(cardid primitive.ObjectID, display bool) error
 }
 
 type CardRepository struct {
@@ -78,4 +81,12 @@ func (r *CardRepository) SortCard(ctx context.Context, method string) ([]model.C
 	}
 	//log.Println(cards)
 	return cards, nil
+}
+
+func (r *CardRepository) UpdateDisplay(ctx context.Context, cardid primitive.ObjectID, display bool) error {
+	_, err := r.collection.UpdateOne(ctx, bson.M{"_id": cardid}, bson.M{"$set": bson.M{"display": display}})
+	if err != nil {
+		return err
+	}
+	return nil
 }

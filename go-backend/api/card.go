@@ -7,6 +7,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"log"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -37,6 +38,7 @@ func NewCard(r *gin.Context) {
 		Questions:      []primitive.ObjectID{},
 		FavoritesCount: 0,
 		CreateAt:       time.Now().Format("2006-01-02 15:04:05"),
+		Display:        true,
 	}
 
 	card, err := c.NewCard(r, newCard)
@@ -139,5 +141,39 @@ func GetCard(r *gin.Context) {
 	r.JSON(http.StatusOK, gin.H{
 		"error": nil,
 		"card":  card,
+	})
+}
+
+func IsDisplay(r *gin.Context) {
+	cardCollection := repository.SelectCollection(repository.DB, "cards")
+	c := repository.NewCardRepository(cardCollection)
+
+	cardID := r.Query("cardID")
+	_cardID, err := primitive.ObjectIDFromHex(cardID)
+	if err != nil {
+		r.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	display := r.Query("display")
+	_display, err := strconv.ParseBool(display)
+	if err != nil {
+		r.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	err = c.UpdateDisplay(r, _cardID, _display)
+	if err != nil {
+		r.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	r.JSON(http.StatusOK, gin.H{
+		"error": nil,
 	})
 }

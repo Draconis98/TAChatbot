@@ -55,6 +55,7 @@ func main() {
 		getGroup.GET("/username", api.GetUsername)
 		getGroup.GET("card", api.GetCard)
 		getGroup.GET("/question", api.GetQuestion)
+		getGroup.GET("isdisplay", api.IsDisplay)
 	}
 
 	newGroup := router.Group("/new")

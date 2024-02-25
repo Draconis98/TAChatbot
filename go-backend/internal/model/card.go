@@ -15,4 +15,5 @@ type Card struct {
 	FavoritesCount int                  `json:"favoritesCount" bson:"favoritesCount"`
 	Summary        string               `json:"summary" bson:"summary"`
 	CreateAt       string               `json:"create_at" bson:"create_at"`
+	Display        bool                 `json:"display" bson:"display"`
 }

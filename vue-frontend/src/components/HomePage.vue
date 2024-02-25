@@ -141,7 +141,7 @@ function getCardsSortedByHottest() {
 function card_details(cardID) {
   console.log('查看卡片详');
   console.log(cardID);
-  window.sessionStorage.setItem('cardID', cardID);
+  window.localStorage.setItem('cardID', cardID);
   window.location.href = '/card/details';
 }
 
@@ -348,7 +348,7 @@ onMounted(() => {
   text-overflow: ellipsis;
   //white-space: nowrap;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 4;
+  line-clamp: 3;
 }
 
 .card-footer {

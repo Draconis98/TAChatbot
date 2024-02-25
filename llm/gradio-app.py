@@ -15,7 +15,7 @@ print("init model...")
 model = AutoModelForCausalLM.from_pretrained(
     model_path,
     torch_dtype=torch.float16,
-    device_map="auto",
+    device_map="cuda:0",
     trust_remote_code=True
 )
 model = PeftModel.from_pretrained(model, lora_path)
@@ -48,7 +48,7 @@ def predict(message, history, request: gr.Request):
     generate_kwargs = dict(
         model_inputs,
         streamer=streamer,
-        max_new_tokens=2048,
+        max_new_tokens=4096,
         do_sample=True,
         top_p=0.95,     # model从累计概率大于或等于p的最小集合中随机选择一个token
         top_k=2000,     # 保留概率最高的k个token

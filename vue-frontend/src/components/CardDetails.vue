@@ -49,23 +49,23 @@ function myfavorite() {
 
 function logout() {
   console.log('退出登录');
-  window.sessionStorage.removeItem('userID');
-  window.sessionStorage.removeItem('username');
-  window.sessionStorage.removeItem('cardID');
+  window.localStorage.removeItem('userID');
+  window.localStorage.removeItem('username');
+  window.localStorage.removeItem('cardID');
   window.location.href = '/';
 }
 
 onMounted(() => {
       console.log('mounted');
       // userID = window.location.href.split('userID=')[1];
-      let userID = window.sessionStorage.getItem('userID');
+      let userID = window.localStorage.getItem('userID');
       console.log(userID)
       if (userID != null) {
         axios.get(backendURL.value + '/get/username?userID=' + userID)
             .then((response) => {
               console.log(response.data);
-              window.sessionStorage.setItem('username', response.data.username);
-              username.value = window.sessionStorage.getItem('username');
+              window.localStorage.setItem('username', response.data.username);
+              username.value = window.localStorage.getItem('username');
             }).catch((error) => {
           if (error.response.status === 401) {
             alert('用户不存在，请重新登录');
@@ -83,7 +83,7 @@ onMounted(() => {
 
 onMounted(() => {
   // let card_id = window.location.href.split('cardID=')[1]
-  card_id.value = window.sessionStorage.getItem('cardID');
+  card_id.value = window.localStorage.getItem('cardID');
   console.log("card id: ", card_id.value)
   axios.get(backendURL.value + '/get/card?cardID=' + card_id.value)
       .then((response) => {
@@ -166,7 +166,7 @@ function back() {
             <el-card class="box-card" shadow="never">
               <template #header>
                 <div class="card-header">
-                  <span>#{{ card_id.slice(10) }}</span>
+                  <span></span>
                   <el-button v-if="isStar.value===false" :icon="Star" circle disabled @click="toggleStar"></el-button>
                   <el-button v-else :icon="Star" type="warning" circle disabled @click="toggleStar"></el-button>
                 </div>

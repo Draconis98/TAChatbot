@@ -16,7 +16,7 @@ onMounted(() => {
                   .then((response) => {
                     console.log(response.data);
                     if (response.data.error === null) {
-                      window.sessionStorage.setItem('userID', response.data.userID);
+                      window.localStorage.setItem('userID', response.data.userID);
                       // window.location.href = 'http://10.30.19.40:8081/?userID=' + response.data.userID;
                       window.location.href = 'https://callme.agileserve.org.cn:30940';
                     } else {

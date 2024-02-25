@@ -7,6 +7,7 @@ const backendURL = ref('https://callme.agileserve.org.cn:30941')
 const iframeSrc = ref('');
 const username = ref(null);
 const input = ref('');
+const display = ref(true);
 
 function authenticate() {
   axios.get(backendURL.value + '/auth')
@@ -34,9 +35,9 @@ function myfavorite() {
 
 function logout() {
   console.log('退出登录');
-  window.sessionStorage.removeItem('userID');
-  window.sessionStorage.removeItem('username');
-  window.sessionStorage.removeItem('cardID');
+  window.localStorage.removeItem('userID');
+  window.localStorage.removeItem('username');
+  window.localStorage.removeItem('cardID');
   window.location.href = '/';
 }
 
@@ -44,14 +45,26 @@ function back() {
   window.history.back();
 }
 
+function isdisplay(display) {
+  let cardID = window.localStorage.getItem('cardID');
+  axios.get(backendURL.value + '/get/isdisplay?cardID=' + cardID + '&display=' + display)
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.log('获取认证URL失败：', error);
+      });
+  console.log(display);
+}
+
 
 onMounted(() => {
   // 获取当前页面的URL
-  const userID = window.sessionStorage.getItem('userID');
-  const cardID = window.sessionStorage.getItem('cardID');
-  username.value = window.sessionStorage.getItem('username');
+  const userID = window.localStorage.getItem('userID');
+  const cardID = window.localStorage.getItem('cardID');
+  username.value = window.localStorage.getItem('username');
 
-  iframeSrc.value = `https://callme.agileserve.org.cn:30942/?userID=${userID}&cardID=${cardID}`
+  iframeSrc.value = `https://callme.agileserve.org.cn:30942/?userID=${userID}&cardID=${cardID}`;
 });
 </script>
 
@@ -98,6 +111,16 @@ onMounted(() => {
         </el-header>
         <el-main>
           <div>
+            <el-tooltip content="选择是否在首页显示，默认展示" placement="right">
+              <el-switch
+                  v-model="display"
+                  active-text="显示"
+                  inactive-text="隐藏"
+                  @change="isdisplay(display)"
+              />
+            </el-tooltip>
+          </div>
+          <div>
             <iframe
                 :src="iframeSrc"
                 frameborder="0"
@@ -108,7 +131,7 @@ onMounted(() => {
       </el-container>
       <el-footer class="footer">
         <div class="claim">
-          本平台仅供学习使用，请勿做其他用途；生成式回答，内容仅供参考。
+          本平台仅供学习使用，请勿做其他用途；生成式回答，内容仅供参考。模型由Baichuan2-7B经过指令微调得到，使用Apache 2.0协议。
         </div>
       </el-footer>
     </el-container>
@@ -174,7 +197,7 @@ onMounted(() => {
 
 .iframe {
   width: 100%;
-  height: 79.5vh;
+  height: 76vh;
   align-items: center;
   align-content: center;
 }

@@ -200,7 +200,7 @@ function back() {
       </el-container>
       <el-footer class="footer">
         <div class="claim">
-          本平台仅供学习使用，请勿做其他用途；生成式回答，内容仅供参考。
+          本平台仅供学习使用，请勿做其他用途；生成式回答，内容仅供参考。模型由Baichuan2-7B经过指令微调得到，使用Apache 2.0协议。
         </div>
       </el-footer>
     </el-container>

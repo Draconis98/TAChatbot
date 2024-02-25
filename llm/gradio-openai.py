@@ -31,13 +31,16 @@ def predict(message, history, request: gr.Request):
             partial_message += chunk['choices'][0]['delta']['content']
             yield partial_message
 
+    # print(request.headers)
+
     registory.utils.record_question(request, message, partial_message)
 
 
 if __name__ == "__main__":
     chat_interface.ChatInterface(
         fn=predict,
-        chatbot=gr.Chatbot(scale=1, height=600),
+        chatbot=gr.Chatbot(scale=1, height=200),
         css="margin.css",
+        undo_btn=None,
         # theme="soft"
     ).launch(server_port=8082)

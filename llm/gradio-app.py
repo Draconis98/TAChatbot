@@ -31,6 +31,7 @@ def generate_response(message, history):
     try:
         history_formatted = history + [[message, ""]]
         messages = "\n".join(["<human>:" + item[0] + "\n<bot>:" + item[1] for item in history_formatted])
+        print(messages)
 
         inputs = tokenizer.encode(messages, return_tensors="pt").half().to("cuda")
 
@@ -43,12 +44,20 @@ def generate_response(message, history):
             "pad_token_id": tokenizer.eos_token_id,
         }
 
-        outputs = model.generate(inputs, **generate_kwargs)
+        streamer = TextIteratorStreamer(tokenizer, timeout=10., skip_prompt=True, skip_special_tokens=True)
 
-        generate_sequence = outputs[0].cpu().tolist()
-        bot_message = tokenizer.decode(generate_sequence, clean_up_tokenization_spaces=True)
+        t = Thread(target=model.generate, kwargs=generate_kwargs).start()
 
-        return bot_message.replace("<|endoftext|>", "")
+        # generate_sequence = outputs[0].cpu().tolist()
+        # bot_message = tokenizer.decode(generate_sequence, clean_up_tokenization_spaces=True)
+
+        # return bot_message.replace("<|endoftext|>", "")
+
+        partial_message = ""
+        for new_token in streamer:
+            if new_token != tokenizer.eos_token:
+                partial_message += new_token
+                yield partial_message
 
     except Exception as e:
         print(f"Error during generation: {e}")
@@ -56,8 +65,8 @@ def generate_response(message, history):
 
 
 def predict(message, history, request: gr.Request):
-    bot_message = generate_response(message, history)
-    registory.utils.record_question(request, message, bot_message)
+    generate_response(message, history)
+    # registory.utils.record_question(request, message, bot_message)
 
 
 if __name__ == "__main__":

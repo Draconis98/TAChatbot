@@ -15,7 +15,7 @@ print("init model...")
 model = AutoModelForCausalLM.from_pretrained(
     model_path,
     torch_dtype=torch.float16,
-    device_map="cuda:0",
+    device_map="cuda:1",
     trust_remote_code=True
 )
 model = PeftModel.from_pretrained(model, lora_path)
@@ -27,45 +27,37 @@ tokenizer = AutoTokenizer.from_pretrained(
 )
 
 
-class StopOnTokens(StoppingCriteria):
-    def __call__(self, input_ids: torch.LongTensor, scores: torch.FloatTensor, **kwargs) -> bool:
-        stop_ids = [29, 0]
-        for stop_id in stop_ids:
-            if input_ids[0][-1] == stop_id:
-                return True
-        return False
+def generate_response(message, history):
+    try:
+        history_formatted = history + [[message, ""]]
+        messages = "\n".join(["<human>:" + item[0] + "\n<bot>:" + item[1] for item in history_formatted])
+
+        inputs = tokenizer.encode(messages, return_tensors="pt").half().to("cuda")
+
+        generate_kwargs = {
+            "max_length": 2048 + inputs.shape[1],
+            "temperature": 0.7,
+            "top_p": 0.95,
+            "top_k": 50,
+            "num_return_sequences": 1,
+            "pad_token_id": tokenizer.eos_token_id,
+        }
+
+        outputs = model.generate(inputs, **generate_kwargs)
+
+        generate_sequence = outputs[0].cpu().tolist()
+        bot_message = tokenizer.decode(generate_sequence, clean_up_tokenization_spaces=True)
+
+        return bot_message.replace("<|endoftext|>", "")
+
+    except Exception as e:
+        print(f"Error during generation: {e}")
+        return "I'm sorry, I cannot generate a response at the moment."
 
 
 def predict(message, history, request: gr.Request):
-    history_transformer_format = history + [[message, ""]]
-    stop = StopOnTokens()
-
-    messages = "".join(["".join(["\n<human>:" + item[0], "\n<bot>:" + item[1]])  # curr_system_message +
-                        for item in history_transformer_format])
-
-    model_inputs = tokenizer([messages], return_tensors="pt").to("cuda")
-    streamer = TextIteratorStreamer(tokenizer, timeout=10., skip_prompt=True, skip_special_tokens=True)
-    generate_kwargs = dict(
-        model_inputs,
-        streamer=streamer,
-        max_new_tokens=4096,
-        do_sample=True,
-        top_p=0.95,     # model从累计概率大于或等于p的最小集合中随机选择一个token
-        top_k=2000,     # 保留概率最高的k个token
-        temperature=0.7,
-        num_beams=1,
-        stopping_criteria=StoppingCriteriaList([stop])
-    )
-    t = Thread(target=model.generate, kwargs=generate_kwargs)
-    t.start()
-
-    partial_message = ""
-    for new_token in streamer:
-        if new_token != '<':
-            partial_message += new_token
-            yield partial_message
-
-    registory.utils.record_question(request, message, partial_message)
+    bot_message = generate_response(message, history)
+    registory.utils.record_question(request, message, bot_message)
 
 
 if __name__ == "__main__":

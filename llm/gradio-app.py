@@ -27,46 +27,32 @@ tokenizer = AutoTokenizer.from_pretrained(
 )
 
 
-def generate_response(message, history):
-    try:
-        history_formatted = history + [[message, ""]]
-        messages = "\n".join(["<human>:" + item[0] + "\n<bot>:" + item[1] for item in history_formatted])
-        print(messages)
-
-        inputs = tokenizer.encode(messages, return_tensors="pt").half().to("cuda")
-
-        generate_kwargs = {
-            "max_length": 2048 + inputs.shape[1],
-            "temperature": 0.7,
-            "top_p": 0.95,
-            "top_k": 50,
-            "num_return_sequences": 1,
-            "pad_token_id": tokenizer.eos_token_id,
-        }
-
-        streamer = TextIteratorStreamer(tokenizer, timeout=10., skip_prompt=True, skip_special_tokens=True)
-
-        t = Thread(target=model.generate, kwargs=generate_kwargs).start()
-
-        # generate_sequence = outputs[0].cpu().tolist()
-        # bot_message = tokenizer.decode(generate_sequence, clean_up_tokenization_spaces=True)
-
-        # return bot_message.replace("<|endoftext|>", "")
-
-        partial_message = ""
-        for new_token in streamer:
-            if new_token != tokenizer.eos_token:
-                partial_message += new_token
-                yield partial_message
-
-    except Exception as e:
-        print(f"Error during generation: {e}")
-        return "I'm sorry, I cannot generate a response at the moment."
-
-
 def predict(message, history, request: gr.Request):
-    generate_response(message, history)
-    # registory.utils.record_question(request, message, bot_message)
+    history_formatted = history + [[message, ""]]
+    messages = "\n".join(["<human>:" + item[0] + "\n<bot>:" + item[1] for item in history_formatted])
+    print(messages)
+
+    inputs = tokenizer.encode(messages, return_tensors="pt").to("cuda")
+
+    generate_kwargs = {
+        "max_length": 2048 + inputs.shape[1],
+        "temperature": 0.7,
+        "top_p": 0.95,
+        "top_k": 50,
+        "num_return_sequences": 1,
+        "pad_token_id": tokenizer.eos_token_id,
+    }
+
+    streamer = TextIteratorStreamer(tokenizer, timeout=10., skip_prompt=True, skip_special_tokens=True)
+
+    t = Thread(target=model.generate, kwargs=generate_kwargs)
+    t.start()
+
+    partial_message = ""
+    for new_token in streamer:
+        if new_token != tokenizer.eos_token:
+            partial_message += new_token
+            yield partial_message
 
 
 if __name__ == "__main__":

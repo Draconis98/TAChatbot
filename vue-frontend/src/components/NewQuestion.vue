@@ -1,49 +1,24 @@
 <script setup>
 import {onMounted, ref} from 'vue';
 import axios from "axios";
-import {ArrowLeftBold, Back, Search} from "@element-plus/icons-vue";
+import {ArrowLeftBold, Search} from "@element-plus/icons-vue";
+import {
+  backendURL,
+  username,
+  authenticate,
+  back,
+  logout,
+  myquestion,
+  myfavorite,
+} from "@/composables/commonLogic.js";
 
-const backendURL = ref('https://callme.agileserve.org.cn:30941')
+// variables
+
 const iframeSrc = ref('');
-const username = ref(null);
 const input = ref('');
 const display = ref(true);
 
-function authenticate() {
-  axios.get(backendURL.value + '/auth')
-      .then((response) => {
-            console.log(response.data);
-            // 解析url
-            let url = new URL(response.data.url);
-            console.log(url);
-            window.location.href = url.href;
-          }
-      )
-      .catch((error) => {
-        alert('获取认证URL失败：' + error)
-        console.log('获取认证URL失败：', error);
-      });
-}
-
-function myquestion() {
-  // TODO: 跳转到我的问题页面
-}
-
-function myfavorite() {
-  // TODO: 跳转到我的收藏页面
-}
-
-function logout() {
-  console.log('退出登录');
-  window.localStorage.removeItem('userID');
-  window.localStorage.removeItem('username');
-  window.localStorage.removeItem('cardID');
-  window.location.href = '/';
-}
-
-function back() {
-  window.history.back();
-}
+// function
 
 function isdisplay(display) {
   let cardID = window.localStorage.getItem('cardID');
@@ -57,6 +32,7 @@ function isdisplay(display) {
   console.log(display);
 }
 
+// Mounted
 
 onMounted(() => {
   // 获取当前页面的URL
@@ -139,41 +115,6 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.layout {
-  display: -webkit-flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0;
-  margin: 0;
-  height: 100vh;
-  width: 100vw;
-}
-
-.container {
-  height: 100vh;
-  width: 100vw;
-  justify-content: space-between;
-  padding: 0 0;
-  margin: 0;
-}
-
-.navbar {
-  display: -webkit-inline-flex;
-  height: 5vh;
-  align-items: center;
-}
-
-.searchbar {
-  height: 40px;
-}
-
-.login-text {
-  cursor: pointer;
-  color: #329eff;
-  text-decoration: underline;
-  padding: 0 10px;
-}
-
 .el-dropdown-link {
   cursor: pointer;
   color: #329eff;
@@ -183,27 +124,10 @@ onMounted(() => {
   padding: 0 10px;
 }
 
-.footer {
-  height: 5vh;
-}
-
-.logo {
-  width: 25px;
-  height: 25px;
-  justify-items: center;
-  align-items: center;
-  margin-right: 10px;
-}
-
 .iframe {
   width: 100%;
   height: 76vh;
   align-items: center;
   align-content: center;
-}
-
-.claim {
-  text-align: center;
-  font-size: 14px;
 }
 </style>

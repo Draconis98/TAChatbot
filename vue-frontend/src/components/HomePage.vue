@@ -1,93 +1,34 @@
 <script setup>
 import {onMounted, ref} from 'vue'
-import {Search, Star} from "@element-plus/icons-vue";
+import {Search} from "@element-plus/icons-vue";
 import axios from "axios";
-import {useCursor} from "element-plus";
+import {
+  backendURL,
+  username,
+  authenticate,
+  check,
+  logout,
+  myquestion,
+  myfavorite,
+  login,
+} from "@/composables/commonLogic.js";
 
 // variables
 
-const backendURL = ref('https://callme.agileserve.org.cn:30941')
 const input = ref('')
 const isStar = ref(false)
 const count = ref(0)
 const checked = ref(false)
-const username = ref(null)
 let cards = ref([])
 
 const load = () => {
-  console.log('加载更多');
   count.value += 3;
 }
 
 // function
 
-function onChange(status) {
-  checked.value = status;
-}
-
-function authenticate() {
-  axios.get(backendURL.value + '/auth')
-      .then((response) => {
-            console.log(response.data);
-            // 解析url
-            let url = new URL(response.data.url);
-            console.log(url);
-            window.location.href = url.href;
-          }
-      )
-      .catch((error) => {
-        alert('获取认证URL失败：' + error)
-        console.log('获取认证URL失败：', error);
-      });
-}
-
-function myquestion() {
-  // TODO: 跳转到我的问题页面
-}
-
-function myfavorite() {
-  // TODO: 跳转到我的收藏页面
-}
-
-function logout() {
-  console.log('退出登录');
-  window.localStorage.removeItem('userID');
-  window.localStorage.removeItem('username');
-  window.localStorage.removeItem('cardID');
-  window.location.href = '/';
-}
-
-function toggleStar() {
-  if (isStar.value === false) {
-    isStar.value = true;
-    console.log('收藏');
-  } else {
-    isStar.value = false;
-    console.log('取消收藏');
-  }
-}
-
-function latest() {
-  getCardsSortedByLatest();
-  console.log('按最新排序');
-}
-
-function hottest() {
-  getCardsSortedByHottest();
-  console.log('按最热排序');
-}
-
 function createNewQuestion() {
-  console.log('创建新问题');
-  // if (!username.value) {
-  //   alert('请先登录');
-  //   authenticate();
-  //   return;
-  // }
-  console.log('创建一个新的卡片来记录问题');
-  // let userID = window.location.href.split('userID=')[1];
   let userID = window.localStorage.getItem('userID');
-  console.log(userID)
   axios.get(backendURL.value + '/new/card?userID=' + userID)
       .then((response) => {
         console.log(response.data);
@@ -100,8 +41,8 @@ function createNewQuestion() {
       });
 }
 
-function getCardsSortedByLatest() {
-  axios.get(backendURL.value + '/show/latest')
+function getCardsSortedBy(method) {
+  axios.get(backendURL.value + '/show/' + method)
       .then((response) => {
         cards.value = [];
         for (let i = 0; i < response.data.card_list.length; i++) {
@@ -111,27 +52,6 @@ function getCardsSortedByLatest() {
             }
           }
         }
-        // cards.value = response.data.card_list;
-        console.log(cards.value);
-      })
-      .catch((error) => {
-        alert('获取卡片失败\n' + error);
-      });
-}
-
-function getCardsSortedByHottest() {
-  axios.get(backendURL.value + '/show/hottest')
-      .then((response) => {
-        cards.value = [];
-        for (let i = 0; i < response.data.card_list.length; i++) {
-          if (response.data.card_list[i].content.length > 0) {
-            if (response.data.card_list[i].display === true) {
-              cards.value.push(response.data.card_list[i]);
-            }
-          }
-        }
-        // cards.value = response.data.card_list;
-        console.log(cards.value);
       })
       .catch((error) => {
         alert('获取卡片失败\n' + error);
@@ -139,57 +59,18 @@ function getCardsSortedByHottest() {
 }
 
 function card_details(cardID) {
-  console.log('查看卡片详');
-  console.log(cardID);
   window.localStorage.setItem('cardID', cardID);
   window.location.href = '/card/details';
 }
 
 // Mounted
 
-onMounted(() => {
-      // userID = window.location.href.split('userID=')[1];
-      let userID = window.localStorage.getItem('userID');
-      console.log(userID)
-      if (userID == null) {
-        authenticate();
-      } else {
-        axios.get(backendURL.value + '/get/username?userID=' + userID)
-            .then((response) => {
-              console.log(response.data);
-              window.localStorage.setItem('username', response.data.username);
-              username.value = window.localStorage.getItem('username');
-            }).catch((error) => {
-          if (error.response.status === 401) {
-            alert('用户不存在，请重新登录');
-            authenticate();
-          } else if (error.response.status === 500) {
-            alert('获取用户名失败, 请重新登录');
-            authenticate();
-          }
-        });
-      }
-    }
-)
+login();
 
 onMounted(() => {
-  let userID = window.localStorage.getItem('userID');
-  if (userID != null) {
-    axios.get(backendURL.value + '/show/')
-        .then((response) => {
-          for (let i = 0; i < response.data.card_list.length; i++) {
-            if (response.data.card_list[i].content.length > 0) {
-              if (response.data.card_list[i].display === true) {
-                cards.value.push(response.data.card_list[i]);
-              }
-            }
-          }
-          // cards.value = response.data.card_list;
-          console.log(cards.value);
-        })
-        .catch((error) => {
-          alert('获取卡片失败\n' + error);
-        });
+  if (window.localStorage.getItem('userID') != null) {
+    check();
+    getCardsSortedBy("");
   }
 })
 </script>
@@ -227,8 +108,8 @@ onMounted(() => {
       <el-container>
         <el-header>
           <el-menu class="menu" mode="horizontal" center :ellipsis="false">
-            <el-menu-item index="1" @click="latest">按最新排序</el-menu-item>
-            <el-menu-item index="2" @click="hottest" disabled>按最热排序</el-menu-item>
+            <el-menu-item index="1" @click="getCardsSortedBy('latest')">按最新排序</el-menu-item>
+            <el-menu-item index="2" @click="getCardsSortedBy('hottest')" disabled>按最热排序</el-menu-item>
             <el-menu-item index="3" @click="createNewQuestion">创建新问题</el-menu-item>
           </el-menu>
         </el-header>
@@ -277,67 +158,6 @@ onMounted(() => {
 
 
 <style scoped>
-.layout {
-  display: -webkit-flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0;
-  margin: 0;
-  height: 100vh;
-  width: 100vw;
-}
-
-.container {
-  height: 100vh;
-  width: 100vw;
-  justify-content: space-between;
-  padding: 0 0;
-  margin: 0;
-}
-
-.navbar {
-  display: -webkit-inline-flex;
-  height: 5vh;
-  align-items: center;
-}
-
-.searchbar {
-  height: 40px;
-}
-
-.login-text {
-  cursor: pointer;
-  color: #329eff;
-  text-decoration: underline;
-  padding: 0 10px;
-}
-
-.el-dropdown-link {
-  cursor: pointer;
-  color: #329eff;
-  text-decoration: underline;
-  display: flex;
-  align-items: center;
-  padding: 0 10px;
-}
-
-.footer {
-  height: 5vh;
-}
-
-.menu {
-  display: -webkit-flex;
-  justify-content: start;
-  align-items: center;
-}
-
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 3px;
-}
-
 .card-body {
   display: -webkit-box;
   justify-content: space-between;
@@ -356,14 +176,6 @@ onMounted(() => {
   justify-content: space-between;
   align-items: center;
   height: 5px;
-}
-
-.logo {
-  width: 25px;
-  height: 25px;
-  justify-items: center;
-  align-items: center;
-  margin-right: 10px;
 }
 
 .box-card {
@@ -390,10 +202,5 @@ onMounted(() => {
 
 .infinite-list .infinite-list-item + .list-item {
   margin-top: 10px;
-}
-
-.claim {
-  text-align: center;
-  font-size: 14px;
 }
 </style>

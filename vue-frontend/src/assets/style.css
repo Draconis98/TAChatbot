@@ -1,0 +1,73 @@
+.layout {
+    display: -webkit-flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0;
+    margin: 0;
+    height: 100vh;
+    width: 100vw;
+}
+
+.container {
+    height: 100vh;
+    width: 100vw;
+    justify-content: space-between;
+    padding: 0 0;
+    margin: 0;
+}
+
+.navbar {
+    display: -webkit-inline-flex;
+    height: 5vh;
+    align-items: center;
+}
+
+.searchbar {
+    height: 40px;
+}
+
+.claim {
+    text-align: center;
+    font-size: 14px;
+}
+
+.login-text {
+    cursor: pointer;
+    color: #329eff;
+    text-decoration: underline;
+    padding: 0 10px;
+}
+
+.el-dropdown-link {
+    cursor: pointer;
+    color: #329eff;
+    text-decoration: underline;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+}
+
+.footer {
+    height: 5vh;
+}
+
+.menu {
+    display: -webkit-flex;
+    justify-content: start;
+    align-items: center;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 5px;
+}
+
+.logo {
+    width: 25px;
+    height: 25px;
+    justify-items: center;
+    align-items: center;
+    margin-right: 10px;
+}

@@ -2,10 +2,18 @@
 import {onMounted, ref} from 'vue'
 import {ArrowLeftBold, CircleCloseFilled, Search, Star, SuccessFilled} from "@element-plus/icons-vue";
 import axios from "axios";
+import {
+  backendURL,
+  username,
+  authenticate,
+  back,
+  check,
+  logout,
+  myquestion,
+  myfavorite,
+} from "@/composables/commonLogic.js";
 
-const backendURL = ref('https://callme.agileserve.org.cn:30941')
 const input = ref('')
-const username = ref(null)
 const isStar = ref(false)
 const card_id = ref('')
 let card_data = ref({})
@@ -13,86 +21,22 @@ let qa_id = ref([])
 let qa_data = ref([])
 let count = ref(0)
 
-const load = () => {
-  console.log('加载更多');
-  count.value += 3;
-}
-
-function user() {
-  console.log('用户信息');
-}
-
-function authenticate() {
-  axios.get(backendURL.value + '/auth')
-      .then((response) => {
-            console.log(response.data);
-            // 解析url
-            let url = new URL(response.data.url);
-            console.log(url);
-            window.location.href = url.href;
-          }
-      )
-      .catch((error) => {
-        alert('获取认证URL失败：' + error)
-        console.log('获取认证URL失败：', error);
-      });
-}
-
-
-function myquestion() {
-  // TODO: 跳转到我的问题页面
-}
-
-function myfavorite() {
-  // TODO: 跳转到我的收藏页面
-}
-
-function logout() {
-  console.log('退出登录');
-  window.localStorage.removeItem('userID');
-  window.localStorage.removeItem('username');
-  window.localStorage.removeItem('cardID');
-  window.location.href = '/';
-}
+// Mounted
 
 onMounted(() => {
-      console.log('mounted');
-      // userID = window.location.href.split('userID=')[1];
-      let userID = window.localStorage.getItem('userID');
-      console.log(userID)
-      if (userID != null) {
-        axios.get(backendURL.value + '/get/username?userID=' + userID)
-            .then((response) => {
-              console.log(response.data);
-              window.localStorage.setItem('username', response.data.username);
-              username.value = window.localStorage.getItem('username');
-            }).catch((error) => {
-          if (error.response.status === 401) {
-            alert('用户不存在，请重新登录');
-            authenticate();
-          } else if (error.response.status === 500) {
-            alert('获取用户名失败, 请重新登录');
-            authenticate();
-          }
-        });
-      }
-
-      // console.log(username.value);
-    }
-)
+  if (window.localStorage.getItem('userID') !== null) {
+    check();
+    username.value = window.localStorage.getItem('username');
+  }
+});
 
 onMounted(() => {
-  // let card_id = window.location.href.split('cardID=')[1]
   card_id.value = window.localStorage.getItem('cardID');
-  console.log("card id: ", card_id.value)
   axios.get(backendURL.value + '/get/card?cardID=' + card_id.value)
       .then((response) => {
         card_data = response.data.card;
-        console.log(card_data);
         qa_id = card_data.questions;
-        console.log(qa_id);
         for (let i = 0; i < qa_id.length; i++) {
-          console.log(qa_id[i])
           axios.get(backendURL.value + '/get/question?questionID=' + qa_id[i])
               .then((response) => {
                 qa_data.value[i] = response.data;
@@ -113,10 +57,6 @@ function toggleStar() {
     isStar.value = false;
     console.log('取消收藏');
   }
-}
-
-function back() {
-  window.history.back();
 }
 </script>
 
@@ -179,16 +119,16 @@ function back() {
                       <div class="question">{{ item.question }}</div>
                       <el-divider></el-divider>
                       <div>{{ item.answer }}
-                      <el-tooltip v-if="item.likes === 1" content="原提问者对这个答案表示满意" placement="right">
-                        <el-icon class="like" color="green">
-                          <SuccessFilled/>
-                        </el-icon>
-                      </el-tooltip>
-                      <el-tooltip v-else-if="item.likes === 2" content="原提问者对这个答案表示不满" placement="right">
-                        <el-icon class="like" color="blue">
-                          <CircleCloseFilled/>
-                        </el-icon>
-                      </el-tooltip>
+                        <el-tooltip v-if="item.likes === 1" content="原提问者对这个答案表示满意" placement="right">
+                          <el-icon class="like" color="green">
+                            <SuccessFilled/>
+                          </el-icon>
+                        </el-tooltip>
+                        <el-tooltip v-else-if="item.likes === 2" content="原提问者对这个答案表示不满" placement="right">
+                          <el-icon class="like" color="blue">
+                            <CircleCloseFilled/>
+                          </el-icon>
+                        </el-tooltip>
                       </div>
                     </el-card>
                   </el-timeline-item>
@@ -209,75 +149,6 @@ function back() {
 
 
 <style scoped>
-.layout {
-  display: -webkit-flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0;
-  margin: 0;
-  height: 100vh;
-  width: 100vw;
-}
-
-.container {
-  height: 100vh;
-  width: 100vw;
-  justify-content: space-between;
-  padding: 0 0;
-  margin: 0;
-}
-
-.navbar {
-  display: -webkit-inline-flex;
-  height: 5vh;
-  align-items: center;
-}
-
-.searchbar {
-  height: 40px;
-}
-
-.login-text {
-  cursor: pointer;
-  color: #329eff;
-  text-decoration: underline;
-  padding: 0 10px;
-}
-
-.el-dropdown-link {
-  cursor: pointer;
-  color: #329eff;
-  text-decoration: underline;
-  display: flex;
-  align-items: center;
-  padding: 0 10px;
-}
-
-.footer {
-  height: 5vh;
-}
-
-.menu {
-  display: -webkit-flex;
-  justify-content: start;
-  align-items: center;
-}
-
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 5px;
-}
-
-.logo {
-  width: 25px;
-  height: 25px;
-  justify-items: center;
-  align-items: center;
-  margin-right: 10px;
-}
-
 .question {
   font-weight: bold;
 }
@@ -301,10 +172,5 @@ function back() {
 
 .infinite-list .infinite-list-item + .list-item {
   margin-top: 10px;
-}
-
-.claim {
-  text-align: center;
-  font-size: 14px;
 }
 </style>

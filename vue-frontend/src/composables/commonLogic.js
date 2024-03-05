@@ -33,6 +33,7 @@ export function back() {
 
 export function myquestion() {
     // TODO: 跳转到我的问题页面
+    window.location.href = '/questions';
 }
 
 export function myfavorite() {
@@ -48,6 +49,7 @@ export function login() {
         axios.get(backendURL.value + '/get/username?userID=' + window.localStorage.getItem('userID'))
             .then(response => {
                 window.localStorage.setItem('username', response.data.username);
+                window.localStorage.setItem('role', response.data.role);
                 username.value = window.localStorage.getItem('username');
             })
             .catch(error => {
@@ -71,5 +73,19 @@ export function check() {
         })
         .catch((error) => {
             console.log('获取用户信息失败\n' + error);
+        });
+}
+
+export function createNewQuestion() {
+    let userID = window.localStorage.getItem('userID');
+    axios.get(backendURL.value + '/new/card?userID=' + userID)
+        .then((response) => {
+            console.log(response.data);
+            window.localStorage.setItem('cardID', response.data.cardID);
+            window.location.href = '/new/question';
+        })
+        .catch((error) => {
+            alert('服务器出现错误，无法创建新问题，请重新尝试');
+            console.log('创建新卡片失败：', error);
         });
 }

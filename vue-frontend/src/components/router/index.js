@@ -8,11 +8,11 @@ const router = createRouter({
             name: 'HomePage',
             component: () => import('@/components/HomePage.vue')
         },
-        // {
-        //     path: '/callback/github',
-        //     name: 'GithubCallback',
-        //     component: () => import('@/components/GithubCallback.vue')
-        // },
+        {
+            path: '/callback/github',
+            name: 'GithubCallback',
+            component: () => import('@/components/GithubCallback.vue')
+        },
         {
             path: '/callback/gitlab',
             name: 'GitlabCallback',
@@ -32,6 +32,11 @@ const router = createRouter({
             path: '/card/details',
             name: 'CardDetails',
             component: () => import('@/components/CardDetails.vue')
+        },
+        {
+            path: '/questions',
+            name: 'MyQuestions',
+            component: () => import('@/components/MyQuestions.vue')
         }
     ]
 })

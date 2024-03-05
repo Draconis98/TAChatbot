@@ -1,11 +1,12 @@
 <script setup>
 import {onMounted, ref} from 'vue'
-import {Search} from "@element-plus/icons-vue";
+import {ArrowLeftBold, Search} from "@element-plus/icons-vue";
 import axios from "axios";
 import {
   backendURL,
   username,
   authenticate,
+  back,
   check,
   createNewQuestion,
   logout,
@@ -33,7 +34,8 @@ function getCardsSortedBy(method) {
       .then((response) => {
         cards.value = [];
         for (let i = 0; i < response.data.card_list.length; i++) {
-          if (response.data.card_list[i].content.length > 0 && response.data.card_list[i].display === true) {
+          if (response.data.card_list[i].content.length > 0 &&
+              response.data.card_list[i].userID === window.localStorage.getItem('userID')) {
             cards.value.push(response.data.card_list[i]);
           }
         }
@@ -93,9 +95,15 @@ onMounted(() => {
       <el-container>
         <el-header>
           <el-menu class="menu" mode="horizontal" center :ellipsis="false">
-            <el-menu-item index="1" @click="getCardsSortedBy('latest')">按最新排序</el-menu-item>
-            <el-menu-item index="2" @click="getCardsSortedBy('hottest')">按最热排序</el-menu-item>
-            <el-menu-item index="3" @click="createNewQuestion">创建新问题</el-menu-item>
+            <el-menu-item index="1" @click="back">
+              <el-icon>
+                <ArrowLeftBold/>
+              </el-icon>
+              返回首页
+            </el-menu-item>
+            <el-menu-item index="2" @click="getCardsSortedBy('latest')">按最新排序</el-menu-item>
+            <el-menu-item index="3" @click="getCardsSortedBy('hottest')">按最热排序</el-menu-item>
+            <el-menu-item index="4" @click="createNewQuestion">创建新问题</el-menu-item>
           </el-menu>
         </el-header>
         <el-container>

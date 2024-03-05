@@ -36,7 +36,7 @@ func main() {
 
 	// register the routes
 	// TODO: auth这部分，现在如果用户碰巧手动输入了一个正确的userid的话，会进到别的用户的界面中
-	router.GET("/auth", api.GitLabOAuth)
+	router.GET("/auth", api.GitHubOAuth)
 
 	callbackGroup := router.Group("/callback")
 	{
@@ -53,15 +53,19 @@ func main() {
 	getGroup := router.Group("/get")
 	{
 		getGroup.GET("/username", api.GetUsername)
-		getGroup.GET("card", api.GetCard)
+		getGroup.GET("/userRole", api.GetUserRole)
+		getGroup.GET("/card", api.GetCard)
 		getGroup.GET("/question", api.GetQuestion)
-		getGroup.GET("isdisplay", api.IsDisplay)
+		getGroup.GET("/isdisplay", api.IsDisplay)
+		getGroup.GET("/comment", api.GetComment)
+		getGroup.GET("/click", api.Click)
 	}
 
 	newGroup := router.Group("/new")
 	{
 		newGroup.GET("/card", api.NewCard)
 		newGroup.GET("/question", api.NewQuestion)
+		newGroup.GET("/comment", api.NewComment)
 	}
 
 	showGroup := router.Group("/show")
@@ -75,7 +79,7 @@ func main() {
 	//	log.Panic(err)
 	//}
 
-	if err := router.Run("10.30.19.40:8080"); err != nil {
+	if err := router.Run("127.0.0.1:8080"); err != nil {
 		log.Panic(err)
 	}
 }

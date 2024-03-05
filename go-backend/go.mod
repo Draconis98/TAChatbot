@@ -6,7 +6,6 @@ require (
 	github.com/gin-contrib/cors v1.5.0
 	github.com/gin-gonic/gin v1.9.1
 	github.com/sashabaranov/go-openai v1.19.3
-	github.com/unrolled/secure v1.14.0
 	go.mongodb.org/mongo-driver v1.13.1
 	golang.org/x/oauth2 v0.16.0
 )

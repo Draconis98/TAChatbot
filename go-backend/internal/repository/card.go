@@ -6,6 +6,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"sort"
 )
 
 type CardRepo interface {
@@ -72,12 +73,15 @@ func (r *CardRepository) SortCard(ctx context.Context, method string) ([]model.C
 		//log.Println(card)
 		if method == "latest" { // 如果是要求按最新的顺序排列，则从切片前向插入
 			cards = append([]model.Card{card}, cards...)
-		} else if method == "hottest" {
-			// TODO: 按照热度排序
 		} else { // 否则从切片尾部插入
 			cards = append(cards, card)
 		}
+	}
 
+	if method == "hottest" {
+		sort.Slice(cards, func(i, j int) bool {
+			return cards[i].FavoritesCount > cards[j].FavoritesCount
+		})
 	}
 	//log.Println(cards)
 	return cards, nil
@@ -85,6 +89,14 @@ func (r *CardRepository) SortCard(ctx context.Context, method string) ([]model.C
 
 func (r *CardRepository) UpdateDisplay(ctx context.Context, cardid primitive.ObjectID, display bool) error {
 	_, err := r.collection.UpdateOne(ctx, bson.M{"_id": cardid}, bson.M{"$set": bson.M{"display": display}})
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (r *CardRepository) UpdateClicks(ctx context.Context, cardid primitive.ObjectID) error {
+	_, err := r.collection.UpdateOne(ctx, bson.M{"_id": cardid}, bson.M{"$inc": bson.M{"favoritesCount": 1}})
 	if err != nil {
 		return err
 	}

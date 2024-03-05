@@ -177,3 +177,29 @@ func IsDisplay(r *gin.Context) {
 		"error": nil,
 	})
 }
+
+func Click(r *gin.Context) {
+	cardCollection := repository.SelectCollection(repository.DB, "cards")
+	c := repository.NewCardRepository(cardCollection)
+
+	cardID := r.Query("cardID")
+	_cardID, err := primitive.ObjectIDFromHex(cardID)
+	if err != nil {
+		r.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	err = c.UpdateClicks(r, _cardID)
+	if err != nil {
+		r.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	r.JSON(http.StatusOK, gin.H{
+		"error": nil,
+	})
+}

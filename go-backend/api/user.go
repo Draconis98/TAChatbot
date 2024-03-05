@@ -79,3 +79,31 @@ func GetUsername(c *gin.Context) {
 		"username": username,
 	})
 }
+
+func GetUserRole(c *gin.Context) {
+	userCollection := repository.SelectCollection(repository.DB, "users")
+	r := repository.NewUserRepository(userCollection)
+
+	userID := c.Query("userID")
+	id, err := primitive.ObjectIDFromHex(userID)
+	if err != nil { // 用户ID转换失败，是服务器内部错误
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+			"role":  "",
+		})
+		return
+	}
+
+	role, err := r.GetUserRole(context.Background(), id)
+	if err != nil { // 没有这个用户ID，属于未授权
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": err.Error(),
+			"role":  "",
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"error": nil,
+		"role":  role,
+	})
+}

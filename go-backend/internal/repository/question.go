@@ -29,3 +29,20 @@ func (r *QuestionRepository) GetQA(ctx context.Context, questionid primitive.Obj
 
 	return qa, nil
 }
+
+func (r *QuestionRepository) AddComment(ctx context.Context, questionID, commentID primitive.ObjectID) error {
+	commentCollection := SelectCollection(DB, "comments")
+	c := NewCommentRepository(commentCollection)
+	comment, err := c.GetComment(ctx, commentID)
+	if err != nil {
+		return err
+	}
+
+	_, err = r.collection.UpdateOne(ctx,
+		bson.M{"_id": questionID},
+		bson.M{"$push": bson.M{"comments": commentID, "comments_content": comment.Content}})
+	if err != nil {
+		return err
+	}
+	return nil
+}

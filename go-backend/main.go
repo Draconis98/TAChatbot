@@ -24,6 +24,7 @@ func main() {
 			"http://localhost:8081",
 			"http://127.0.0.1:8081",
 			"https://10.30.19.40:8081",
+			"http://10.130.10.68:8081",
 			"https://callme.agileserve.org.cn:30940",
 		},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
@@ -59,6 +60,7 @@ func main() {
 		getGroup.GET("/isdisplay", api.IsDisplay)
 		getGroup.GET("/comment", api.GetComment)
 		getGroup.GET("/click", api.Click)
+		getGroup.GET("/email", api.Email)
 	}
 
 	newGroup := router.Group("/new")
@@ -79,7 +81,7 @@ func main() {
 	//	log.Panic(err)
 	//}
 
-	if err := router.Run("127.0.0.1:8080"); err != nil {
+	if err := router.Run("10.130.10.68:8080"); err != nil {
 		log.Panic(err)
 	}
 }

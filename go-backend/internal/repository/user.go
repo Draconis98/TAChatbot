@@ -14,6 +14,7 @@ type UserRepo interface {
 	NewUser(user *model.User) (*model.User, error)
 	GetUser(username, email string) (*model.User, error)
 	GetUsername(id primitive.ObjectID) (string, error)
+	GetEmail(id primitive.ObjectID) (string, error)
 	GetUserRole(id primitive.ObjectID) (string, error)
 	CheckUserExistence(id primitive.ObjectID) (bool, error)
 }
@@ -51,6 +52,15 @@ func (r *UserRepository) GetUsername(ctx context.Context, id primitive.ObjectID)
 		return "", err
 	}
 	return user.Username, nil
+}
+
+func (r *UserRepository) GetEmail(ctx context.Context, id primitive.ObjectID) (string, error) {
+	var user model.User
+	err := r.collection.FindOne(ctx, bson.M{"_id": id}).Decode(&user)
+	if err != nil {
+		return "", err
+	}
+	return user.Email, nil
 }
 
 func (r *UserRepository) GetUserRole(ctx context.Context, id primitive.ObjectID) (string, error) {

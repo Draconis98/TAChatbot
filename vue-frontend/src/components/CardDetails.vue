@@ -98,8 +98,9 @@ onMounted(() => {
       .then((response) => {
         card_data = response.data.card;
 
-        if (window.localStorage.getItem('userID') !== card_data.userID) {
+        if (window.localStorage.getItem('userID') !== card_data.userID && sessionStorage.getItem("isPageReloaded") !== "true"){
           console.log('不是本人的卡片');
+          sessionStorage.setItem("isPageReloaded", "true");
           axios.get(backendURL.value + '/get/click?cardID=' + window.localStorage.getItem('cardID'))
               .then((response) => {
                 console.log('点击量+1');

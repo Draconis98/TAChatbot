@@ -28,6 +28,7 @@ export function logout() {
 }
 
 export function back() {
+    window.sessionStorage.setItem("isPageReloaded", "false")
     window.location.href = '/';
 }
 

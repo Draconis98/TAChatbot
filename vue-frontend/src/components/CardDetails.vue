@@ -74,6 +74,14 @@ function submit() {
       }).catch((error) => {
     console.log('添加评论失败\n', error);
   });
+  axios.get(backendURL.value + '/get/email?cardID=' +
+      window.localStorage.getItem('cardID') +
+      '&questionID=' + questionID.value)
+      .then((response) => {
+        console.log(response.data);
+      }).catch((error) => {
+    console.log('邮件发送失败\n', error);
+  });
 }
 
 // Mounted
@@ -243,7 +251,8 @@ onMounted(() => {
                         <template #footer>
                           <div class="dialog-footer">
                             <el-button v-model="comment" @click="cancel">取消</el-button>
-                            <el-button v-model="comment" type="primary" @click="submit">提交</el-button>
+                            <el-button v-model="comment" type="primary" @click="submit" v-if="comment === ''" disabled>提交</el-button>
+                            <el-button v-model="comment" type="primary" @click="submit" v-else>提交</el-button>
                           </div>
                         </template>
                       </el-dialog>

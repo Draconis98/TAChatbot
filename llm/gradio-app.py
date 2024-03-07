@@ -58,7 +58,7 @@ def predict_with_history(history, user_input):
 # 创建Gradio界面，使用状态特性来保留对话历史
 iface = chat_interface.ChatInterface(
     fn=predict_with_history,
-    chatbot=gr.Chatbot(scale=1, height=600),
+    chatbot=gr.Chatbot(scale=1, height=200),
     css="margin.css",
     undo_btn=None,
 )

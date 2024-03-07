@@ -49,7 +49,7 @@ def predict_with_history(history, user_input):
 
     # 从生成的文本中提取AI的最后一条回复
     response_text = response_text[len(prompt):]
-    history.append(f"[|AI|]:{response_text}")
+    history.join(f"[|AI|]:{response_text}")
 
     # 仅返回AI的最后一条回复和更新的历史
     return response_text, "\n".join(history)

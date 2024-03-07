@@ -5,6 +5,7 @@ import (
 	"go-backend/internal/repository"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"log"
+	"time"
 )
 
 func Email(r *gin.Context) {
@@ -68,6 +69,9 @@ func Email(r *gin.Context) {
 
 	question := qa.Question
 	answer := qa.Answer
+
+	time.Sleep(30 * time.Second)
+
 	comment := qa.CommentsContent[len(qa.Comments)-1]
 
 	// 发送邮件

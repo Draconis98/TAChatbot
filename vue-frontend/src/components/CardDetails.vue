@@ -70,17 +70,17 @@ function submit() {
       .then((response) => {
         console.log(response.data);
         comment.value = '';
+        axios.get(backendURL.value + '/get/email?cardID=' +
+            window.localStorage.getItem('cardID') +
+            '&questionID=' + questionID.value)
+            .then((response) => {
+              console.log(response.data);
+            }).catch((error) => {
+          console.log('邮件发送失败\n', error);
+        });
         window.location.reload();
       }).catch((error) => {
     console.log('添加评论失败\n', error);
-  });
-  axios.get(backendURL.value + '/get/email?cardID=' +
-      window.localStorage.getItem('cardID') +
-      '&questionID=' + questionID.value)
-      .then((response) => {
-        console.log(response.data);
-      }).catch((error) => {
-    console.log('邮件发送失败\n', error);
   });
 }
 

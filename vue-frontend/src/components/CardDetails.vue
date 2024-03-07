@@ -18,7 +18,7 @@ import {
   check,
   logout,
   myquestion,
-  myfavorite,
+  myfavorite, createNewQuestion,
 } from "@/composables/commonLogic.js";
 
 // variables
@@ -176,6 +176,7 @@ onMounted(() => {
               </el-icon>
               返回首页
             </el-menu-item>
+            <el-menu-item index="2" @click="createNewQuestion">创建新问题</el-menu-item>
           </el-menu>
         </el-header>
         <el-container>

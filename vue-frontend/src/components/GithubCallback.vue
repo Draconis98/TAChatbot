@@ -1,16 +1,17 @@
 <script setup>
 import axios from "axios";
 import {onMounted} from "vue";
+import {backendURL} from "@/composables/commonLogic.js";
 
 onMounted(() => {
       let code = window.location.href.split('code=')[1];
       if (code) {
-        axios.get('http://127.0.0.1:8080/callback/github?code=' + code)
+        axios.get(backendURL.value + '/callback/github?code=' + code)
             .then((response) => {
               console.log(response.data);
               let username = response.data.username;
               let email = response.data.email;
-              axios.get('http://127.0.0.1:8080/check/user?username=' + username + '&email=' + email)
+              axios.get(backendURL.value + '/check/user?username=' + username + '&email=' + email)
                   .then((response) => {
                     console.log(response.data);
                     if (response.data.error === null) {

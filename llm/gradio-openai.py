@@ -43,4 +43,4 @@ if __name__ == "__main__":
         css="margin.css",
         undo_btn=None,
         # theme="soft"
-    ).launch(server_port=8082)
+    ).launch(server_name="10.130.10.68", server_port=8082)

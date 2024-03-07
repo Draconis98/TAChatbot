@@ -37,7 +37,10 @@ def record_question(request, message, partial_message):
                             {"question": message,
                              "answer": partial_message,
                              "like": 0,
-                             "create_at": dt_string,}
+                             "create_at": dt_string,
+                             "comments": [],
+                             "comments_content": [],
+                             }
                             ).inserted_id
     referer = request.headers["referer"]
     # 确定用户ID和卡片ID的类型

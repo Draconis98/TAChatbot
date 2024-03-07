@@ -4,9 +4,14 @@ const router = createRouter({
     history: createWebHistory(),
     routes: [
         {
-            path: '/',
+            path: '/home',
             name: 'HomePage',
             component: () => import('@/components/HomePage.vue')
+        },
+        {
+            path: '/',
+            name: 'Maintenance',
+            component: () => import('@/components/Maintenance.vue')
         },
         {
             path: '/callback/github',

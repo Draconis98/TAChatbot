@@ -308,14 +308,6 @@ b {
   font-weight: bold;
 }
 
-.button {
-  display: flex;
-  align-content: center;
-  align-items: center;
-  justify-content: center;
-  justify-items: center;
-}
-
 .like {
   display: flex;
   align-items: center;

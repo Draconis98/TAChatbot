@@ -1,5 +1,5 @@
 <script setup>
-import {onMounted, ref, toRaw} from 'vue'
+import {computed, onMounted, ref, toRaw} from 'vue'
 import {
   ArrowLeftBold,
   CircleCloseFilled,
@@ -18,8 +18,10 @@ import {
   check,
   logout,
   myquestion,
-  myfavorite, createNewQuestion,
+  myfavorite,
+  createNewQuestion,
 } from "@/composables/commonLogic.js";
+import MarkdownIt from 'markdown-it';
 
 // variables
 
@@ -84,6 +86,11 @@ function submit() {
   });
 }
 
+function parseMarkdown(text) {
+  const md = new MarkdownIt();
+  return md.render(text);
+}
+
 // Mounted
 
 onMounted(() => {
@@ -98,7 +105,7 @@ onMounted(() => {
       .then((response) => {
         card_data = response.data.card;
 
-        if (window.localStorage.getItem('userID') !== card_data.userID && sessionStorage.getItem("isPageReloaded") !== "true"){
+        if (window.localStorage.getItem('userID') !== card_data.userID && sessionStorage.getItem("isPageReloaded") !== "true") {
           console.log('不是本人的卡片');
           sessionStorage.setItem("isPageReloaded", "true");
           axios.get(backendURL.value + '/get/click?cardID=' + window.localStorage.getItem('cardID'))
@@ -194,11 +201,11 @@ onMounted(() => {
                   <el-timeline-item v-for="item in qa_data" :key="item" :timestamp="item.create_at" placement="top">
                     <el-card shadow="hover">
                       <div class="question">
-                        <pre class="pre">{{ item.question }}</pre>
+                        <div v-html="parseMarkdown(item.question)"></div>
                       </div>
                       <el-divider>模型回答，仅供参考</el-divider>
                       <el-container>
-                        <pre class="pre">{{ item.answer }}</pre>
+                        <div v-html="parseMarkdown(item.answer)"></div>
                         <el-tooltip v-if="item.likes === 1" content="原提问者对这个答案表示满意" placement="bottom">
                           <el-icon class="like" color="green">
                             <SuccessFilled/>
@@ -253,7 +260,9 @@ onMounted(() => {
                         <template #footer>
                           <div class="dialog-footer">
                             <el-button v-model="comment" @click="cancel">取消</el-button>
-                            <el-button v-model="comment" type="primary" @click="submit" v-if="comment === ''" disabled>提交</el-button>
+                            <el-button v-model="comment" type="primary" @click="submit" v-if="comment === ''" disabled>
+                              提交
+                            </el-button>
                             <el-button v-model="comment" type="primary" @click="submit" v-else>提交</el-button>
                           </div>
                         </template>

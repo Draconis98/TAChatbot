@@ -35,11 +35,11 @@ export default defineConfig({
             '/api': {
                 // target: 'https://10.30.19.40:8080',
                 changeOrigin: true,
-                // target: 'https://callme.agileserve.org.cn:30941'
-                target: 'http://127.0.0.1:8080'
+                target: 'https://callme.agileserve.org.cn:30941'
+                // target: 'http://127.0.0.1:8080'
             },
         },
-        host: '127.0.0.1',
+        host: '10.30.19.40',
         port: 8081,
         // https: true,
         // key: fs.readFileSync('/home/jss40/assistant/10.30.19.40-key.pem'),

@@ -4,8 +4,6 @@ import gradio as gr
 from registory import my_chat_interface as chat_interface
 import registory.utils
 
-# openai.api_key = "sk-xxx"
-
 
 def predict(message, history, request: gr.Request):
     # 将聊天历史格式化为OpenAI API所需的格式

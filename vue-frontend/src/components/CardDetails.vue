@@ -214,8 +214,24 @@ onMounted(() => {
                 <el-timeline>
                   <el-timeline-item v-for="item in qa_data" :key="item" :timestamp="item.create_at" placement="top">
                     <el-card shadow="hover">
+<<<<<<< Updated upstream
                       <div class="question">
                         <div v-html="parseMarkdown(item.question)"></div>
+=======
+                      <div class="question"><pre class="pre">{{ item.question }}</pre></div>
+                      <el-divider></el-divider>
+                      <div><pre class="pre">{{ item.answer }}</pre>
+                      <el-tooltip v-if="item.likes === 1" content="原提问者对这个答案表示满意" placement="right">
+                        <el-icon class="like" color="green">
+                          <SuccessFilled/>
+                        </el-icon>
+                      </el-tooltip>
+                      <el-tooltip v-else-if="item.likes === 2" content="原提问者对这个答案表示不满" placement="right">
+                        <el-icon class="like" color="blue">
+                          <CircleCloseFilled/>
+                        </el-icon>
+                      </el-tooltip>
+>>>>>>> Stashed changes
                       </div>
                       <el-divider>模型回答，仅供参考</el-divider>
                       <el-container>
@@ -315,6 +331,56 @@ onMounted(() => {
 
 <style scoped>
 .pre {
+<<<<<<< Updated upstream
+=======
+  white-space: pre-wrap;
+  white-space: -moz-pre-wrap;
+  white-space: -o-pre-wrap;
+  word-wrap: break-word;
+  font-size: 14px;
+}
+
+
+.layout {
+  display: -webkit-flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0;
+  margin: 0;
+  height: 100vh;
+  width: 100vw;
+}
+
+.container {
+  height: 100vh;
+  width: 100vw;
+  justify-content: space-between;
+  padding: 0 0;
+  margin: 0;
+}
+
+.navbar {
+  display: -webkit-inline-flex;
+  height: 5vh;
+  align-items: center;
+}
+
+.searchbar {
+  height: 40px;
+}
+
+.login-text {
+  cursor: pointer;
+  color: #329eff;
+  text-decoration: underline;
+  padding: 0 10px;
+}
+
+.el-dropdown-link {
+  cursor: pointer;
+  color: #329eff;
+  text-decoration: underline;
+>>>>>>> Stashed changes
   display: flex;
   white-space: pre-wrap;
   white-space: -moz-pre-wrap;

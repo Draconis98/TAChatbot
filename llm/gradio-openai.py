@@ -4,7 +4,7 @@ import gradio as gr
 from registory import my_chat_interface as chat_interface
 import registory.utils
 
-openai.api_key = "sk-xxx"
+# openai.api_key = "sk-xxx"
 
 
 def predict(message, history, request: gr.Request):
